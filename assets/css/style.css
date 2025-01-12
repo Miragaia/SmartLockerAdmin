@@ -65,7 +65,7 @@ h1 {
 }
 
 /* Search bar and filters */
-#searchBox, #filterAvailability, #filterMaintenance {
+#searchBox, #filterLockerBoxType, #filterMaintenance {
   border-radius: 20px;
   padding: 10px;
 }

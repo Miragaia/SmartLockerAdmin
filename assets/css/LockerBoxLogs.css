@@ -1,0 +1,98 @@
+/* Back Arrow */
+.back-arrow {
+    font-size: 2rem;
+    text-decoration: none;
+    margin: 20px;
+    display: inline-block;
+    color: #505050;
+    transition: color 0.3s ease, text-decoration 0.3s ease;
+  }
+  
+  .back-arrow:hover {
+    color: #007bff; /* Matches Bootstrap primary color */
+    text-decoration: underline;
+  }
+  
+  /* Page Header */
+  h1 {
+    font-size: 2.5rem;
+    color: #333;
+    margin-bottom: 20px;
+    font-weight: bold;
+  }
+  
+  /* Filters */
+  #lockerIdInput,
+  #actionFilter,
+  #timestampFilter {
+    border: 2px solid #ddd;
+    border-radius: 5px;
+    font-size: 1rem;
+    padding: 10px;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+  }
+  
+  #lockerIdInput:focus,
+  #actionFilter:focus,
+  #timestampFilter:focus {
+    border-color: #007bff;
+    box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+    outline: none;
+  }
+  
+  /* Table */
+  .table {
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    overflow: hidden;
+  }
+  
+  .table thead th {
+    background-color: #da9227;
+    color: #333;
+    font-weight: bold;
+    text-align: center;
+  }
+  
+  .table tbody td {
+    text-align: center;
+  }
+  
+  .table-striped tbody tr:nth-of-type(odd) {
+    background-color: #f9f9f9;
+  }
+  
+  .table-striped tbody tr:hover {
+    background-color: #f1f1f1;
+  }
+  
+  /* Responsive Table */
+  .table-responsive {
+    margin-top: 20px;
+    border-radius: 5px;
+    overflow: hidden;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  }
+  
+  /* Container */
+  .container {
+    max-width: 1200px;
+    margin: auto;
+    padding: 20px;
+  }
+  
+  /* General Body Styling */
+  body {
+    font-family: 'Arial', sans-serif;
+    background-color: #f7f7f7;
+    color: #333;
+    margin: 0;
+    padding: 0;
+  }
+  
+  /* Placeholder Text Styling */
+  ::placeholder {
+    color: #aaa;
+    font-style: italic;
+  }
+  

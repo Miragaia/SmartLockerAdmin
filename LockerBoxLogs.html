@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LockerBox Logs</title>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <link rel="stylesheet" href="assets/css/LockerBoxLogs.css">
+  <style>
+    .back-arrow {
+      font-size: 2rem;
+      text-decoration: none;
+      margin: 20px;
+      display: inline-block;
+      color: #505050;
+    }
+    .back-arrow:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+  <!-- Back Arrow -->
+  <a href="LockerBoxDetails.html" class="back-arrow">
+    &#8592;
+  </a>
+
+  <div class="container mt-4">
+    <h1 class="text-center">LockerBox Logs</h1>
+
+    <!-- Filters -->
+    <div class="row mt-4">
+      <div class="col-md-4">
+        <input type="text" id="lockerIdInput" class="form-control" placeholder="Search by Locker ID">
+      </div>
+      <div class="col-md-4">
+        <select id="actionFilter" class="form-control">
+          <option value="">Filter by Action</option>
+          <option value="Unlock">Unlock</option>
+          <option value="Lock">Lock</option>
+          <option value="Maintenance">Maintenance</option>
+        </select>
+      </div>
+      <div class="col-md-4">
+        <input type="date" id="timestampFilter" class="form-control">
+      </div>
+    </div>
+
+    <!-- Logs Table -->
+    <div class="table-responsive mt-4">
+      <table class="table table-striped">
+        <thead>
+          <tr>
+            <th scope="col">Locker ID</th>
+            <th scope="col">Action</th>
+            <th scope="col">Timestamp</th>
+            <th scope="col">User ID</th>
+          </tr>
+        </thead>
+        <tbody id="logsTable">
+          <!-- Example Data -->
+          <tr>
+            <td>Locker 1</td>
+            <td>Unlock</td>
+            <td>2025-01-01 10:00:00</td>
+            <td>User123</td>
+          </tr>
+          <tr>
+            <td>Locker 2</td>
+            <td>Lock</td>
+            <td>2025-01-01 12:30:00</td>
+            <td>User456</td>
+          </tr>
+          <tr>
+            <td>Locker 3</td>
+            <td>Maintenance</td>
+            <td>2025-01-02 15:45:00</td>
+            <td>-</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+  <script>
+    // Example filter functionality
+    document.addEventListener("DOMContentLoaded", () => {
+      const lockerIdInput = document.getElementById("lockerIdInput");
+      const actionFilter = document.getElementById("actionFilter");
+      const timestampFilter = document.getElementById("timestampFilter");
+      const logsTable = document.getElementById("logsTable");
+
+      function filterLogs() {
+        const lockerId = lockerIdInput.value.toLowerCase();
+        const action = actionFilter.value;
+        const timestamp = timestampFilter.value;
+
+        Array.from(logsTable.rows).forEach(row => {
+          const [idCell, actionCell, timestampCell] = row.cells;
+          const matchesLockerId = idCell.textContent.toLowerCase().includes(lockerId);
+          const matchesAction = action === "" || actionCell.textContent === action;
+          const matchesTimestamp = timestamp === "" || timestampCell.textContent.startsWith(timestamp);
+
+          row.style.display = matchesLockerId && matchesAction && matchesTimestamp ? "" : "none";
+        });
+      }
+
+      lockerIdInput.addEventListener("input", filterLogs);
+      actionFilter.addEventListener("change", filterLogs);
+      timestampFilter.addEventListener("input", filterLogs);
+    });
+  </script>
+</body>
+</html>
