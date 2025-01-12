@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Dashboard</title>
+  <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+  <div class="container">
+    <h1 class="text-center">Admin Dashboard</h1>
+    <div class="card mt-4">
+      <div class="card-header">Locker Logs</div>
+      <div class="card-body">
+        <table class="table table-striped">
+          <thead>
+            <tr>
+              <th scope="col">Locker ID</th>
+              <th scope="col">User ID</th>
+              <th scope="col">Action</th>
+              <th scope="col">Timestamp</th>
+            </tr>
+          </thead>
+          <tbody id="logsTable">
+            <!-- Data will be dynamically inserted here -->
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- Firebase configuration and JavaScript -->
+  <script type="module">
+    import { db, collection, getDocs } from "./firebase/firebase.js";
+
+    // Fetch Locker Logs from Firestore
+    const fetchLogs = async () => {
+      const logsTable = document.getElementById('logsTable');
+      logsTable.innerHTML = ''; // Clear table contents
+
+      try {
+        // Fetch all LockerBoxes
+        const lockerBoxesSnapshot = await getDocs(collection(db, 'LockerBoxes'));
+
+        for (const lockerBoxDoc of lockerBoxesSnapshot.docs) {
+          // For each LockerBox, fetch the Lockers subcollection
+          const lockersSnapshot = await getDocs(collection(lockerBoxDoc.ref, 'Lockers'));
+
+          for (const lockerDoc of lockersSnapshot.docs) {
+            // For each Locker, fetch the Logs subcollection
+            const logsSnapshot = await getDocs(collection(lockerDoc.ref, 'Logs'));
+
+            logsSnapshot.forEach((logDoc) => {
+              const logData = logDoc.data();
+              const row = `
+                <tr>
+                  <td>${logData.lockerId || 'N/A'}</td>
+                  <td>${logData.userId || 'N/A'}</td>
+                  <td>${logData.action || 'N/A'}</td>
+                  <td>${logData.timestamp ? new Date(logData.timestamp.seconds * 1000).toLocaleString() : 'N/A'}</td>
+                </tr>
+              `;
+              logsTable.innerHTML += row;
+            });
+          }
+        }
+      } catch (error) {
+        console.error('Error fetching logs:', error);
+      }
+    };
+
+    // Fetch data on page load
+    window.onload = () => {
+      fetchLogs();
+    };
+  </script>
+</body>
+</html>
