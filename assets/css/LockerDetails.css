@@ -1,0 +1,91 @@
+/* Basic styling for LockerDetails page */
+.container {
+    margin-top: 30px;
+    font-family: Arial, sans-serif; /* Added a more modern font */
+  }
+  
+  .card {
+    margin-top: 20px;
+  }
+  
+  .card-header {
+    font-size: 1.25rem;
+    font-weight: bold;
+    background-color: #da9227; /* Green background for card header */
+    color: white; /* White text color for contrast */
+    text-align: center;
+  }
+  
+  .card-body {
+    font-size: 1rem;
+    background-color: #f7f7f7; /* Light grey background for the card body */
+    padding: 15px;
+  }
+  
+  table th, table td {
+    text-align: center;
+    vertical-align: middle;
+  }
+  
+  /* Locker Details Section */
+  .locker-details-card {
+    max-width: 600px; /* Limit the width */
+    margin-top: 50px; /* Center vertically with some top space */
+    padding: 20px; /* Add padding inside the card */
+    margin-left: auto;
+    margin-right: auto; /* Center the card horizontally */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+    border-radius: 8px; /* Rounded corners */
+    background-color: #ffffff; /* White background */
+  }
+  
+  /* Button Styles */
+  button {
+    margin-top: 20px;
+    background-color: #4CAF50; /* Green button background */
+    color: white; /* White text */
+    border: none;
+    padding: 10px 20px;
+    border-radius: 4px; /* Rounded corners */
+    cursor: pointer;
+  }
+  
+  button:hover {
+    background-color: #45a049; /* Darker green on hover */
+  }
+  
+  /* Locker Logs Section */
+  .card + .card {
+    margin-top: 20px;
+  }
+  
+  .card-header {
+    background-color: #f8c471; /* Light yellow background for logs */
+    color: #1f3a3d; /* Dark text for contrast */
+  }
+  
+  .card-body {
+    background-color: #ffffff;
+    padding: 20px;
+  }
+  
+  /* Additional optional styles for table */
+  .table-striped tbody tr:nth-of-type(odd) {
+    background-color: #f9f9f9;
+  }
+  
+  .table th, .table td {
+    border: 1px solid #ddd; /* Light border for table cells */
+  }
+  
+  /* Table header styling */
+  .table th {
+    background-color: #da9227; /* Green background for header */
+    color: black; /* White text in table header */
+  }
+  
+  /* Table row hover effect */
+  .table tbody tr:hover {
+    background-color: #eaf2e0; /* Light green background on hover */
+  }
+  

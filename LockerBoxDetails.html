@@ -19,6 +19,9 @@
     .back-arrow:hover {
       text-decoration: underline;
     }
+    .locker-row {
+      cursor: pointer;
+    }
   </style>
 </head>
 <body>
@@ -62,7 +65,7 @@
         <table class="table table-striped">
           <thead>
             <tr>
-              <th scope="col">Name</th>
+              <th scope="col">ID</th>
               <th scope="col">Last Deposit Timestamp</th>
               <th scope="col">Status</th>
               <th scope="col">User ID</th>
@@ -71,28 +74,28 @@
           </thead>
           <tbody id="lockersTable">
             <!-- Example data -->
-            <tr data-status="Unlocked">
+            <tr class="locker-row" data-id="1" data-status="Unlocked">
               <td>Locker 1</td>
               <td>2025-01-01 12:00:00</td>
               <td>Unlocked</td>
               <td>-</td>
               <td>-</td>
             </tr>
-            <tr data-status="Locked">
+            <tr class="locker-row" data-id="2" data-status="Locked">
               <td>Locker 2</td>
               <td>2025-01-02 14:30:00</td>
               <td>Locked</td>
               <td>User123</td>
               <td>ABC123</td>
             </tr>
-            <tr data-status="Maintenance">
+            <tr class="locker-row" data-id="3" data-status="Maintenance">
               <td>Locker 3</td>
               <td>2025-01-03 16:45:00</td>
               <td>Maintenance</td>
               <td>-</td>
               <td>-</td>
             </tr>
-            <tr data-status="Unlocked">
+            <tr class="locker-row" data-id="4" data-status="Unlocked">
               <td>Locker 4</td>
               <td>2025-01-04 10:15:00</td>
               <td>Unlocked</td>
@@ -134,12 +137,15 @@
     document.addEventListener("DOMContentLoaded", initMap);
   </script>
 
-  <!-- JavaScript to dynamically apply row styles -->
+  <!-- JavaScript to dynamically apply row styles and handle clicks -->
   <script>
     document.addEventListener("DOMContentLoaded", () => {
-      const rows = document.querySelectorAll("#lockersTable tr");
+      const rows = document.querySelectorAll(".locker-row");
       rows.forEach(row => {
         const status = row.dataset.status;
+        const lockerId = row.dataset.id;
+        
+        // Apply row styles based on status
         if (status === "Locked") {
           row.classList.add("status-locked");
         } else if (status === "Unlocked") {
@@ -147,6 +153,11 @@
         } else if (status === "Maintenance") {
           row.classList.add("status-maintenance");
         }
+
+        // Add click event to redirect to LockerDetails page
+        row.addEventListener("click", () => {
+          window.location.href = `LockerDetails.html?locker=${lockerId}`;
+        });
       });
     });
   </script>
