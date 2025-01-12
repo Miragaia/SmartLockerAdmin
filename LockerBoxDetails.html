@@ -6,6 +6,20 @@
   <title>LockerBox Details</title>
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
   <link rel="stylesheet" href="assets/css/LockerBoxDetails.css">
+  <style>
+    .map-container {
+      height: 400px; /* Adjust height as needed */
+    }
+    .back-arrow {
+      font-size: 24px;
+      text-decoration: none;
+      margin: 20px;
+      display: inline-block;
+    }
+    .back-arrow:hover {
+      text-decoration: underline;
+    }
+  </style>
 </head>
 <body>
   <!-- Back Arrow -->
@@ -16,17 +30,27 @@
   <div class="container">
     <h1 class="text-center">LockerBox Details</h1>
     
-    <!-- LockerBox Info Card -->
-    <div class="card mt-4">
-      <div class="card-body">
-        <h4>LockerBox Information</h4>
-        <ul class="list-group">
-          <li class="list-group-item"><strong>Name:</strong> LockerBox 1</li>
-          <li class="list-group-item"><strong>Type:</strong> Standard</li>
-          <li class="list-group-item"><strong>Location:</strong> Location A</li>
-          <li class="list-group-item"><strong>Available Lockers:</strong> 15</li>
-          <li class="list-group-item"><strong>Maintenance:</strong> True</li>
-        </ul>
+    <!-- Row for Info Card and Map -->
+    <div class="row mt-4">
+      <!-- LockerBox Info Card -->
+      <div class="col-md-6">
+        <div class="card">
+          <div class="card-body">
+            <h4>LockerBox Information</h4>
+            <ul class="list-group">
+              <li class="list-group-item"><strong>Name:</strong> LockerBox 1</li>
+              <li class="list-group-item"><strong>Type:</strong> Standard</li>
+              <li class="list-group-item"><strong>Location:</strong> Location A</li>
+              <li class="list-group-item"><strong>Available Lockers:</strong> 15</li>
+              <li class="list-group-item"><strong>Maintenance:</strong> True</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- Map -->
+      <div class="col-md-6">
+        <div id="map" class="map-container"></div>
       </div>
     </div>
 
@@ -83,6 +107,31 @@
   <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
   <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+  <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCzRBN_tYwUf-xraiF8XGdyy5RezfWYM5s"></script>
+
+  <!-- JavaScript for Map -->
+  <script>
+    function initMap() {
+      // Coordinates for LockerBox Location (replace with actual coordinates)
+      const lockerLocation = { lat: 37.7749, lng: -122.4194 };
+
+      // Initialize the map
+      const map = new google.maps.Map(document.getElementById("map"), {
+        zoom: 14,
+        center: lockerLocation,
+      });
+
+      // Add a marker for the LockerBox location
+      const marker = new google.maps.Marker({
+        position: lockerLocation,
+        map: map,
+        title: "LockerBox Location",
+      });
+    }
+
+    // Load the map when the page is fully loaded
+    document.addEventListener("DOMContentLoaded", initMap);
+  </script>
 
   <!-- JavaScript to dynamically apply row styles -->
   <script>
