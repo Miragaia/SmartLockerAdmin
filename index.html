@@ -4,75 +4,92 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Admin Dashboard</title>
+  <!-- Add Bootstrap CSS from CDN -->
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
   <link rel="stylesheet" href="assets/css/style.css">
 </head>
 <body>
   <div class="container">
     <h1 class="text-center">Admin Dashboard</h1>
+    
+    <!-- Search and Filter Section -->
+    <div class="row mb-4">
+      <div class="col-md-6">
+        <input type="text" id="searchBox" class="form-control" placeholder="Search LockerBox Name...">
+      </div>
+      <div class="col-md-3">
+        <select id="filterAvailability" class="form-control">
+          <option value="">Filter by Availability</option>
+          <option value="true">Available</option>
+          <option value="false">Not Available</option>
+        </select>
+      </div>
+      <div class="col-md-3">
+        <select id="filterMaintenance" class="form-control">
+          <option value="">Filter by Maintenance</option>
+          <option value="true">In Maintenance</option>
+          <option value="false">Not in Maintenance</option>
+        </select>
+      </div>
+    </div>
+    
+    <!-- LockerBoxes Table -->
     <div class="card mt-4">
-      <div class="card-header">Locker Logs</div>
+      <div class="card-header">LockerBoxes</div>
       <div class="card-body">
         <table class="table table-striped">
           <thead>
             <tr>
-              <th scope="col">Locker ID</th>
-              <th scope="col">User ID</th>
-              <th scope="col">Action</th>
-              <th scope="col">Timestamp</th>
+              <th scope="col">LockerBox Name</th>
+              <th scope="col">Available Lockers</th>
+              <th scope="col">Maintenance</th>
+              <th scope="col">LockerBox Type</th>
+              <th scope="col">Location</th>
             </tr>
           </thead>
-          <tbody id="logsTable">
+          <tbody id="lockerBoxesTable">
             <!-- Data will be dynamically inserted here -->
+            <tr>
+              <td>LockerBox 1</td>
+              <td>15</td>
+              <td>True</td>
+              <td>Standard</td>
+              <td>Location A</td>
+            </tr>
+            <tr>
+              <td>LockerBox 2</td>
+              <td>10</td>
+              <td>False</td>
+              <td>Premium</td>
+              <td>Location B</td>
+            </tr>
+            <tr>
+              <td>LockerBox 3</td>
+              <td>8</td>
+              <td>True</td>
+              <td>Standard</td>
+              <td>Location C</td>
+            </tr>
+            <tr>
+              <td>LockerBox 4</td>
+              <td>5</td>
+              <td>False</td>
+              <td>Deluxe</td>
+              <td>Location D</td>
+            </tr>
           </tbody>
         </table>
       </div>
     </div>
   </div>
 
-  <!-- Firebase configuration and JavaScript -->
-  <script type="module">
-    import { db, collection, getDocs } from "./firebase/firebase.js";
+  <!-- Add Bootstrap JS from CDN -->
+  <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 
-    // Fetch Locker Logs from Firestore
-    const fetchLogs = async () => {
-      const logsTable = document.getElementById('logsTable');
-      logsTable.innerHTML = ''; // Clear table contents
-
-      try {
-        // Fetch all LockerBoxes
-        const lockerBoxesSnapshot = await getDocs(collection(db, 'LockerBoxes'));
-
-        for (const lockerBoxDoc of lockerBoxesSnapshot.docs) {
-          // For each LockerBox, fetch the Lockers subcollection
-          const lockersSnapshot = await getDocs(collection(lockerBoxDoc.ref, 'Lockers'));
-
-          for (const lockerDoc of lockersSnapshot.docs) {
-            // For each Locker, fetch the Logs subcollection
-            const logsSnapshot = await getDocs(collection(lockerDoc.ref, 'Logs'));
-
-            logsSnapshot.forEach((logDoc) => {
-              const logData = logDoc.data();
-              const row = `
-                <tr>
-                  <td>${logData.lockerId || 'N/A'}</td>
-                  <td>${logData.userId || 'N/A'}</td>
-                  <td>${logData.action || 'N/A'}</td>
-                  <td>${logData.timestamp ? new Date(logData.timestamp.seconds * 1000).toLocaleString() : 'N/A'}</td>
-                </tr>
-              `;
-              logsTable.innerHTML += row;
-            });
-          }
-        }
-      } catch (error) {
-        console.error('Error fetching logs:', error);
-      }
-    };
-
-    // Fetch data on page load
-    window.onload = () => {
-      fetchLogs();
-    };
-  </script>
+  <!-- Firebase and custom JavaScript -->
+  <script type="module" src="assets/js/script.js"></script>
+  <script type="module" src="firebase/firebase.js"></script>
 </body>
 </html>
