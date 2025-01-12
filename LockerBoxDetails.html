@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LockerBox Details</title>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <link rel="stylesheet" href="assets/css/LockerBoxDetails.css">
+</head>
+<body>
+  <!-- Back Arrow -->
+  <a href="index.html" class="back-arrow">
+    &#8592;
+  </a>
+
+  <div class="container">
+    <h1 class="text-center">LockerBox Details</h1>
+    
+    <!-- LockerBox Info Card -->
+    <div class="card mt-4">
+      <div class="card-body">
+        <h4>LockerBox Information</h4>
+        <ul class="list-group">
+          <li class="list-group-item"><strong>Name:</strong> LockerBox 1</li>
+          <li class="list-group-item"><strong>Type:</strong> Standard</li>
+          <li class="list-group-item"><strong>Location:</strong> Location A</li>
+          <li class="list-group-item"><strong>Available Lockers:</strong> 15</li>
+          <li class="list-group-item"><strong>Maintenance:</strong> True</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Lockers List -->
+    <div class="card mt-4">
+      <div class="card-header">Lockers</div>
+      <div class="card-body">
+        <table class="table table-striped">
+          <thead>
+            <tr>
+              <th scope="col">Name</th>
+              <th scope="col">Last Deposit Timestamp</th>
+              <th scope="col">Status</th>
+              <th scope="col">User ID</th>
+              <th scope="col">Access Code</th>
+            </tr>
+          </thead>
+          <tbody id="lockersTable">
+            <!-- Example data -->
+            <tr data-status="Unlocked">
+              <td>Locker 1</td>
+              <td>2025-01-01 12:00:00</td>
+              <td>Unlocked</td>
+              <td>-</td>
+              <td>-</td>
+            </tr>
+            <tr data-status="Locked">
+              <td>Locker 2</td>
+              <td>2025-01-02 14:30:00</td>
+              <td>Locked</td>
+              <td>User123</td>
+              <td>ABC123</td>
+            </tr>
+            <tr data-status="Maintenance">
+              <td>Locker 3</td>
+              <td>2025-01-03 16:45:00</td>
+              <td>Maintenance</td>
+              <td>-</td>
+              <td>-</td>
+            </tr>
+            <tr data-status="Unlocked">
+              <td>Locker 4</td>
+              <td>2025-01-04 10:15:00</td>
+              <td>Unlocked</td>
+              <td>-</td>
+              <td>-</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+  <!-- JavaScript to dynamically apply row styles -->
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const rows = document.querySelectorAll("#lockersTable tr");
+      rows.forEach(row => {
+        const status = row.dataset.status;
+        if (status === "Locked") {
+          row.classList.add("status-locked");
+        } else if (status === "Unlocked") {
+          row.classList.add("status-unlocked");
+        } else if (status === "Maintenance") {
+          row.classList.add("status-maintenance");
+        }
+      });
+    });
+  </script>
+</body>
+</html>
