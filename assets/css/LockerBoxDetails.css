@@ -127,30 +127,30 @@ body {
 
   /* General button styles */
 .btn-primary {
-    background-color: #19d23e; /* Bootstrap primary color */
+    background-color: #19d23e;
     border-color: #19d23e; 
-    color: #fff; /* White text */
-    padding: 10px 20px; /* Adjust padding for better size */
-    font-size: 16px; /* Slightly larger text */
-    border-radius: 20px; /* Rounded corners */
+    color: #fff; 
+    padding: 10px 20px; 
+    font-size: 16px; 
+    border-radius: 20px; 
     border-width: 2px;
-    transition: background-color 0.3s ease, box-shadow 0.3s ease; /* Smooth transitions */
-    text-decoration: none; /* Remove underline */
-    display: inline-block; /* Ensure it's inline-block */
+    transition: background-color 0.3s ease, box-shadow 0.3s ease; 
+    text-decoration: none; 
+    display: inline-block;
     
   }
   
   /* Hover state */
   .btn-primary:hover {
-    background-color: #00ff33; /* Darker blue for hover */
-    border-color: #000000; /* Match the hover color */
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Add a subtle shadow */
-    text-decoration: none; /* Keep text clean */
+    background-color: #00ff33; 
+    border-color: #000000; 
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); 
+    text-decoration: none; 
   }
   
   /* Focus state */
   .btn-primary:focus {
-    outline: none; /* Remove default focus outline */
-    box-shadow: 0 0 0 0.2rem rgba(38, 143, 255, 0.5); /* Bootstrap focus style */
+    outline: none; 
+    box-shadow: 0 0 0 0.2rem rgba(38, 143, 255, 0.5);
   }
   

@@ -1,7 +1,7 @@
 /* Basic styling for LockerDetails page */
 .container {
     margin-top: 30px;
-    font-family: Arial, sans-serif; /* Added a more modern font */
+    font-family: Arial, sans-serif;
   }
   
   .card {
@@ -11,14 +11,14 @@
   .card-header {
     font-size: 1.25rem;
     font-weight: bold;
-    background-color: #da9227; /* Green background for card header */
-    color: white; /* White text color for contrast */
+    background-color: #da9227; 
+    color: white; 
     text-align: center;
   }
   
   .card-body {
     font-size: 1rem;
-    background-color: #f7f7f7; /* Light grey background for the card body */
+    background-color: #f7f7f7; 
     padding: 15px;
   }
   
@@ -29,29 +29,29 @@
   
   /* Locker Details Section */
   .locker-details-card {
-    max-width: 600px; /* Limit the width */
-    margin-top: 50px; /* Center vertically with some top space */
-    padding: 20px; /* Add padding inside the card */
+    max-width: 600px; 
+    margin-top: 50px; 
+    padding: 20px; 
     margin-left: auto;
-    margin-right: auto; /* Center the card horizontally */
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow */
-    border-radius: 8px; /* Rounded corners */
-    background-color: #ffffff; /* White background */
+    margin-right: auto; 
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 8px; 
+    background-color: #ffffff;
   }
   
   /* Button Styles */
   button {
     margin-top: 20px;
-    background-color: #4CAF50; /* Green button background */
-    color: white; /* White text */
+    background-color: #4CAF50;
+    color: white;
     border: none;
     padding: 10px 20px;
-    border-radius: 4px; /* Rounded corners */
+    border-radius: 4px; 
     cursor: pointer;
   }
   
   button:hover {
-    background-color: #45a049; /* Darker green on hover */
+    background-color: #45a049;
   }
   
   /* Locker Logs Section */
@@ -60,8 +60,8 @@
   }
   
   .card-header {
-    background-color: #f8c471; /* Light yellow background for logs */
-    color: #1f3a3d; /* Dark text for contrast */
+    background-color: #f8c471; 
+    color: #1f3a3d; 
   }
   
   .card-body {
@@ -75,17 +75,17 @@
   }
   
   .table th, .table td {
-    border: 1px solid #ddd; /* Light border for table cells */
+    border: 1px solid #ddd; 
   }
   
   /* Table header styling */
   .table th {
-    background-color: #da9227; /* Green background for header */
-    color: black; /* White text in table header */
+    background-color: #da9227;
+    color: black; 
   }
   
   /* Table row hover effect */
   .table tbody tr:hover {
-    background-color: #eaf2e0; /* Light green background on hover */
+    background-color: #eaf2e0; 
   }
   

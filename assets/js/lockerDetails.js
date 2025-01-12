@@ -1,8 +1,8 @@
 // lockerDetails.js
 window.onload = () => {
-    // Example: Populate locker details dynamically
+
     const lockerDetails = {
-      lockerName: "LockerBox 1", // This could be dynamically fetched
+      lockerName: "LockerBox 1",
       lockerType: "Standard",
       availableLockers: 15,
       maintenanceStatus: "Not in Maintenance",
