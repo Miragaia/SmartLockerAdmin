@@ -40,47 +40,55 @@ async function fetchLockerBoxDetails(lockerBoxId) {
   }
 }
 
-// Function to fetch lockers and populate the table
-async function fetchLockers() {
-  console.log("Fetching all locker boxes from Firestore...");
-  const lockersRef = collection(db, "LockerBoxes"); // Collection name is now "LockerBoxes"
-  const querySnapshot = await getDocs(lockersRef); // Fetch all lockers
-
-  const lockersTable = document.getElementById("lockersTable");
-  querySnapshot.forEach((doc) => {
-    const locker = doc.data();
-    const lockerBoxId = doc.id; // Renamed to lockerBoxId
-    const status = locker.status;
-    const lastDeposit = locker.lastDeposit || "N/A";
-    const userId = locker.userId || "-";
-    const accessCode = locker.accessCode || "-";
-
-    const row = document.createElement("tr");
-    row.classList.add("locker-row");
-    row.dataset.id = lockerBoxId; // Renamed to lockerBoxId
-    row.dataset.status = status;
-
-    row.innerHTML = `
-      <td>${lockerBoxId}</td> <!-- Updated to lockerBoxId -->
-      <td>${lastDeposit}</td>
-      <td>${status}</td>
-      <td>${userId}</td>
-      <td>${accessCode}</td>
-    `;
-
-    // Handle row click
-    row.addEventListener("click", () => {
-      console.log(`LockerBox row clicked with lockerBoxId: ${lockerBoxId}`);
-      window.location.href = `LockerBoxDetails.html?lockerBoxId=${lockerBoxId}`; // Pass lockerBoxId to the URL
+// Function to fetch lockers for a specific LockerBox
+async function fetchLockers(lockerBoxId) {
+    console.log(`Fetching lockers for LockerBox with lockerBoxId: ${lockerBoxId}`);
+    const lockersRef = collection(db, "LockerBoxes", lockerBoxId, "Lockers"); // Subcollection "Lockers" under the specific LockerBox
+    const querySnapshot = await getDocs(lockersRef); // Fetch all lockers for that LockerBox
+  
+    const lockersTable = document.getElementById("lockersTable");
+    querySnapshot.forEach((doc) => {
+      const locker = doc.data();
+      const lockerId = doc.id; // Locker document ID
+      const status = locker.status;
+      
+      // Convert the Firebase Timestamp to a JavaScript Date
+      let lastDeposit = "N/A"; // Default value
+      if (locker.lastAccessTimestamp) {
+        const timestamp = locker.lastAccessTimestamp;
+        const date = new Date(timestamp.seconds * 1000); // Convert seconds to milliseconds
+        lastDeposit = date.toLocaleString(); // Format the date in a readable way
+      }
+  
+      const userId = locker.userId || "-";
+      const accessCode = locker.accessCode || "-";
+  
+      const row = document.createElement("tr");
+      row.classList.add("locker-row");
+      row.dataset.id = lockerId; // Set lockerId as data attribute
+      row.dataset.status = status;
+  
+      row.innerHTML = `
+        <td>${lockerId}</td>
+        <td>${lastDeposit}</td>
+        <td>${status}</td>
+        <td>${userId}</td>
+        <td>${accessCode}</td>
+      `;
+  
+      // Handle row click
+      row.addEventListener("click", () => {
+        console.log(`Locker row clicked with lockerId: ${lockerId}`);
+        window.location.href = `LockerDetails.html?lockerId=${lockerId}`; // Pass lockerId to the URL
+      });
+  
+      lockersTable.appendChild(row);
     });
-
-    lockersTable.appendChild(row);
-  });
-}
+  }
+  
 
 // Initialize Map
-function initMap() {
-  const lockerLocation = { lat: 37.7749, lng: -122.4194 }; // Default location for the map
+function initMap(lockerLocation) {
   console.log("Initializing map with location:", lockerLocation);
 
   const map = new google.maps.Map(document.getElementById("map"), {
@@ -110,10 +118,10 @@ document.addEventListener("DOMContentLoaded", () => {
   if (lockerBoxId) {
     console.log(`lockerBoxId found in URL: ${lockerBoxId}`);
     fetchLockerBoxDetails(lockerBoxId); // Fetch LockerBox details
-    initMap(); // Initialize map
+    fetchLockers(lockerBoxId); // Fetch and display list of lockers for the specific LockerBox
+    const lockerBoxLocation = { lat: 37.7749, lng: -122.4194 }; // Replace with actual location from Firestore
+    initMap(lockerBoxLocation); // Initialize map with the LockerBox location
   } else {
     console.log("No lockerBoxId found in URL.");
   }
-
-  fetchLockers(); // Fetch and display list of lockers
 });
