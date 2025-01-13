@@ -26,14 +26,28 @@
       </div>
     </div>
 
-    <!-- Locker Logs Section (Same as before) -->
+    <!-- Filters Section -->
+    <div class="row mt-4">
+      <div class="col-md-4">
+        <select id="actionFilter" class="form-control">
+          <option value="">Filter by Action</option>
+          <option value="occupied">Occupied</option>
+          <option value="available">Available</option>
+          <option value="maintenance">Maintenance</option>
+        </select>
+      </div>
+      <div class="col-md-4">
+        <input type="date" id="timestampFilter" class="form-control">
+      </div>
+    </div>
+
+    <!-- Locker Logs Section -->
     <div class="card mt-4">
       <div class="card-header text-center">Locker Logs</div>
       <div class="card-body">
         <table class="table">
           <thead>
             <tr>
-              <th scope="col">Log ID</th>
               <th scope="col">Action</th>
               <th scope="col">Date</th>
               <th scope="col">Details</th>
