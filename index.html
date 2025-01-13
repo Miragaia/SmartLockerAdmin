@@ -49,34 +49,7 @@
             </tr>
           </thead>
           <tbody id="lockerBoxesTable">
-            <tr data-lockerbox="LockerBox 1">
-              <td>LockerBox 1</td>
-              <td>15</td>
-              <td>True</td>
-              <td>Standard</td>
-              <td>Location A</td>
-            </tr>
-            <tr data-lockerbox="LockerBox 2">
-              <td>LockerBox 2</td>
-              <td>10</td>
-              <td>False</td>
-              <td>Premium</td>
-              <td>Location B</td>
-            </tr>
-            <tr data-lockerbox="LockerBox 3">
-              <td>LockerBox 3</td>
-              <td>8</td>
-              <td>True</td>
-              <td>Standard</td>
-              <td>Location C</td>
-            </tr>
-            <tr data-lockerbox="LockerBox 4">
-              <td>LockerBox 4</td>
-              <td>5</td>
-              <td>False</td>
-              <td>Deluxe</td>
-              <td>Location D</td>
-            </tr>
+            <!-- Table rows will be dynamically added here -->
           </tbody>
         </table>
       </div>
@@ -91,20 +64,5 @@
   <!-- Firebase and custom JavaScript -->
   <script type="module" src="assets/js/script.js"></script>
   <script type="module" src="firebase/firebase.js"></script>
-
-  <script>
-    // Make table rows clickable
-    document.addEventListener('DOMContentLoaded', () => {
-      const rows = document.querySelectorAll('#lockerBoxesTable tr');
-      rows.forEach(row => {
-        row.addEventListener('click', () => {
-          const lockerBoxName = row.getAttribute('data-lockerbox');
-          if (lockerBoxName) {
-            window.location.href = `LockerBoxDetails.html?name=${encodeURIComponent(lockerBoxName)}`;
-          }
-        });
-      });
-    });
-  </script>
 </body>
 </html>
