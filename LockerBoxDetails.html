@@ -46,7 +46,7 @@
               <p id="maintenance-status"></p>
               <!-- LockerBox details will be populated here via JavaScript -->
             </ul>
-            <a href="LockerBoxLogs.html" class="btn btn-primary mt-3">View Logs</a>
+            <a id="viewLogsButton" class="btn btn-primary">View Logs</a>
           </div>
         </div>
       </div>
@@ -153,21 +153,24 @@
       return lockerBoxId;
     }
 
-    // Load LockerBox details based on lockerBoxId from URL
     document.addEventListener("DOMContentLoaded", () => {
-      const lockerBoxId = getLockerBoxIdFromURL(); // Get lockerBoxId from URL
+    const lockerBoxId = getLockerBoxIdFromURL(); // Get lockerBoxId from URL
 
-      if (lockerBoxId) {
-        console.log(`LockerBoxId found in URL: ${lockerBoxId}`);
-        fetchLockerBoxDetails(lockerBoxId); // Fetch LockerBox details
+    if (lockerBoxId) {
+      console.log(`LockerBoxId from URL: ${lockerBoxId}`);
+      
+      // Fetch LockerBox details
+      fetchLockerBoxDetails(lockerBoxId);
 
-        // You can update the map location using the location data from Firestore
-        const lockerBoxLocation = { lat: 37.7749, lng: -122.4194 }; // Replace with the actual location from Firestore
-        initMap(lockerBoxLocation); // Initialize map
-      } else {
-        console.log("No lockerBoxId found in URL.");
-      }
-    });
+      // Set the dynamic URL for the "View Logs" button
+      const viewLogsButton = document.getElementById("viewLogsButton");
+      viewLogsButton.href = `LockerBoxLogs.html?lockerBoxId=${lockerBoxId}`;
+
+      setupFilters();
+    } else {
+      console.error("No lockerBoxId found in URL.");
+    }
+  });
   </script>
 
 </body>

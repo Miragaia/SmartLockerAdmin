@@ -58,60 +58,13 @@
           </tr>
         </thead>
         <tbody id="logsTable">
-          <!-- Example Data -->
-          <tr>
-            <td>Locker 1</td>
-            <td>Unlock</td>
-            <td>2025-01-01 10:00:00</td>
-            <td>User123</td>
-          </tr>
-          <tr>
-            <td>Locker 2</td>
-            <td>Lock</td>
-            <td>2025-01-01 12:30:00</td>
-            <td>User456</td>
-          </tr>
-          <tr>
-            <td>Locker 3</td>
-            <td>Maintenance</td>
-            <td>2025-01-02 15:45:00</td>
-            <td>-</td>
-          </tr>
+          <!-- Logs will be dynamically loaded here -->
         </tbody>
       </table>
     </div>
   </div>
 
-  <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
-  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-  <script>
-    // Example filter functionality
-    document.addEventListener("DOMContentLoaded", () => {
-      const lockerIdInput = document.getElementById("lockerIdInput");
-      const actionFilter = document.getElementById("actionFilter");
-      const timestampFilter = document.getElementById("timestampFilter");
-      const logsTable = document.getElementById("logsTable");
-
-      function filterLogs() {
-        const lockerId = lockerIdInput.value.toLowerCase();
-        const action = actionFilter.value;
-        const timestamp = timestampFilter.value;
-
-        Array.from(logsTable.rows).forEach(row => {
-          const [idCell, actionCell, timestampCell] = row.cells;
-          const matchesLockerId = idCell.textContent.toLowerCase().includes(lockerId);
-          const matchesAction = action === "" || actionCell.textContent === action;
-          const matchesTimestamp = timestamp === "" || timestampCell.textContent.startsWith(timestamp);
-
-          row.style.display = matchesLockerId && matchesAction && matchesTimestamp ? "" : "none";
-        });
-      }
-
-      lockerIdInput.addEventListener("input", filterLogs);
-      actionFilter.addEventListener("change", filterLogs);
-      timestampFilter.addEventListener("input", filterLogs);
-    });
-  </script>
+  <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+  <script type="module" src="assets/js/LockerBoxLogs.js"></script>
 </body>
 </html>
