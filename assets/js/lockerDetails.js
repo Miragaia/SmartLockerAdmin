@@ -1,6 +1,6 @@
 // Import Firebase functions
 import { initializeApp } from "https://www.gstatic.com/firebasejs/9.1.1/firebase-app.js";
-import { getFirestore, doc, collection, query, where, onSnapshot, getDocs, updateDoc, addDoc, increment, serverTimestamp  } from "https://www.gstatic.com/firebasejs/9.1.1/firebase-firestore.js";
+import { getFirestore, doc, collection, query, where, onSnapshot, getDocs, getDoc, updateDoc, addDoc, increment, serverTimestamp  } from "https://www.gstatic.com/firebasejs/9.1.1/firebase-firestore.js";
 
 // Initialize Firebase
 const firebaseConfig = {
@@ -141,7 +141,7 @@ function setupFilters(logs) {
   timestampFilter.addEventListener("change", filterLogs);
 }
 
-document.getElementById("setMaintenance").addEventListener("click", async () => {
+document.addEventListener("DOMContentLoaded", async () => {
   const urlParams = new URLSearchParams(window.location.search);
   const lockerId = urlParams.get("lockerId");
   const lockerBoxId = urlParams.get("lockerBoxId");
@@ -154,27 +154,74 @@ document.getElementById("setMaintenance").addEventListener("click", async () => 
   const lockerRef = doc(db, "LockerBoxes", lockerBoxId, "Lockers", lockerId);
   const lockerBoxRef = doc(db, "LockerBoxes", lockerBoxId);
   const logsRef = collection(db, "LockerBoxes", lockerBoxId, "Lockers", lockerId, "Logs");
+  const button = document.getElementById("statusToggleButton");
 
   try {
-    // Update the locker status to "maintenance"
-    await updateDoc(lockerRef, { status: "maintenance" });
+    // Fetch current locker status
+    const lockerSnap = await getDoc(lockerRef);
+    if (!lockerSnap.exists()) {
+      alert("Locker not found.");
+      return;
+    }
 
-    // Decrement the availableLockers count in LockerBox
-    await updateDoc(lockerBoxRef, {
-      availableLockers: increment(-1),
+    const lockerData = lockerSnap.data();
+    updateButtonLabel(lockerData.status);
+
+    // Button click handler
+    button.addEventListener("click", async () => {
+      try {
+        const currentStatus = lockerData.status;
+        let newStatus = "";
+        let action = "";
+        let lockerBoxUpdate = {};
+
+        if (currentStatus === "occupied" || currentStatus === "available") {
+          newStatus = "maintenance";
+          action = "Set to Maintenance";
+          lockerBoxUpdate = { availableLockers: increment(-1) };
+        } else if (currentStatus === "maintenance") {
+          newStatus = "available";
+          action = "Set Available";
+          lockerBoxUpdate = { availableLockers: increment(1) };
+        }
+
+        // Update the locker status
+        await updateDoc(lockerRef, { status: newStatus });
+
+        // Update LockerBox available lockers
+        await updateDoc(lockerBoxRef, lockerBoxUpdate);
+
+        // Add a log entry
+        await addDoc(logsRef, {
+          action: newStatus === "maintenance" ? "maintenance" : "available",
+          userId: "Admin",
+          timestamp: serverTimestamp(),
+        });
+
+        // Update UI
+        lockerData.status = newStatus; // Update local status
+        updateButtonLabel(newStatus);
+        alert(`${action} successfully performed!`);
+      } catch (error) {
+        console.error("Error updating locker status:", error);
+        alert("Failed to update locker status. Please try again.");
+      }
     });
-
-    // Add a log entry for this action
-    await addDoc(logsRef, {
-      action: "maintenance",
-      userId: "Admin",
-      timestamp: serverTimestamp(),
-    });
-
-    alert("Locker set to maintenance successfully!");
   } catch (error) {
-    console.error("Error setting locker to maintenance:", error);
-    alert("Failed to set locker to maintenance. Please try again.");
+    console.error("Error fetching locker details:", error);
+    alert("Failed to fetch locker details. Please try again.");
+  }
+
+  function updateButtonLabel(status) {
+    if (status === "occupied" || status === "available") {
+      button.textContent = "Set to Maintenance";
+      button.classList.remove("btn-success");
+      button.classList.add("btn-warning");
+    } else if (status === "maintenance") {
+      button.textContent = "Set Available";
+      button.classList.remove("btn-warning");
+      button.classList.add("btn-success");
+    }
   }
 });
 
