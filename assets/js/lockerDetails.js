@@ -101,9 +101,9 @@ function displayLogs(logs) {
   logs.forEach((logData) => {
     const row = document.createElement("tr");
 
-    if (logData.action === "occupied") {
+    if (logData.action === "lock") {
       row.classList.add("row-occupied");
-    } else if (logData.action === "available") {
+    } else if (logData.action === "unlock") {
       row.classList.add("row-available");
     } else if (logData.action === "maintenance") {
       row.classList.add("row-maintenance");
@@ -189,8 +189,12 @@ document.addEventListener("DOMContentLoaded", async () => {
           lockerBoxUpdate = { availableLockers: increment(1) };
         }
 
-        // Update the locker status
-        await updateDoc(lockerRef, { status: newStatus });
+        // Update the locker status and userId
+        const lockerUpdates = { status: newStatus };
+        if (resetAccessCode) {
+          lockerUpdates.userId = ""; // Set userId to an empty string
+        }
+        await updateDoc(lockerRef, lockerUpdates);
 
         // Update LockerBox available lockers
         await updateDoc(lockerBoxRef, lockerBoxUpdate);
@@ -202,7 +206,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
         // Add a log entry
         await addDoc(logsRef, {
-          action: newStatus === "maintenance" ? "maintenance" : "available",
+          action: newStatus === "maintenance" ? "maintenance" : "unlock",
           userId: "Admin",
           timestamp: serverTimestamp(),
         });
@@ -233,5 +237,6 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
   }
 });
+
 
 

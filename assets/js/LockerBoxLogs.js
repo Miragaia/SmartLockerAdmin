@@ -84,9 +84,9 @@ function renderLogsTable(allLogs, logsTable) {
     const row = document.createElement("tr");
 
     // Add class based on action
-    if (log.action === "occupied") {
+    if (log.action === "lock") {
       row.classList.add("row-occupied");
-    } else if (log.action === "available") {
+    } else if (log.action === "unlock") {
       row.classList.add("row-available");
     } else if (log.action === "maintenance") {
       row.classList.add("row-maintenance");
