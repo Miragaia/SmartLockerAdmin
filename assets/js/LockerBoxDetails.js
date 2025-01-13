@@ -104,7 +104,6 @@ async function fetchLockers(lockerBoxId) {
         <td>${lastDeposit}</td>
         <td>${status}</td>
         <td>${userId}</td>
-        <td>${accessCode}</td>
       `;
 
       // Handle row click
