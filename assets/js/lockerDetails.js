@@ -31,7 +31,6 @@ window.onload = () => {
   fetchLockerLogs(lockerBoxId, lockerId);
 };
 
-// Fetch Locker details using Firestore
 function fetchLockerDetails(lockerBoxId, lockerId) {
   console.log(`Fetching Locker details for lockerId: ${lockerId} in LockerBox: ${lockerBoxId}`);
   
@@ -44,15 +43,23 @@ function fetchLockerDetails(lockerBoxId, lockerId) {
 
       // Fill in Locker details in the HTML
       document.querySelector("#lockerName").textContent = lockerData.name || "N/A";
-      document.querySelector("#lockerType").textContent = lockerData.type || "N/A";
-      document.querySelector("#availableLockers").textContent = lockerData.availableLockers || "N/A";
-      document.querySelector("#maintenanceStatus").textContent = lockerData.maintenance ? "Yes" : "No";
-      document.querySelector("#lockerLocation").textContent = lockerData.location || "Location Not Available";
+      document.querySelector("#status").textContent = lockerData.status || "N/A";
+      document.querySelector("#lastAccessTime").textContent = lockerData.lastAccessTimestamp?.toDate()?.toLocaleString() || "N/A";
+
+      // Conditionally display User ID section
+      const userIdElement = document.querySelector("#userIdRow");
+      if (lockerData.userId && lockerData.userId !== "N/A") {
+        document.querySelector("#userId").textContent = lockerData.userId || "N/A";
+        userIdElement.style.display = "block"; // Show the row
+      } else {
+        userIdElement.style.display = "none"; // Hide the row
+      }
     } else {
       console.log(`No document found for lockerId: ${lockerId} in LockerBox: ${lockerBoxId}`);
     }
   });
 }
+
 
 // Fetch Locker logs using Firestore
 async function fetchLockerLogs(lockerBoxId, lockerId) {
