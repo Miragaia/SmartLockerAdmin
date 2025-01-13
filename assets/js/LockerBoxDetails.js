@@ -109,8 +109,9 @@ async function fetchLockers(lockerBoxId) {
 
       // Handle row click
       row.addEventListener("click", () => {
-        console.log(`Locker row clicked with lockerId: ${lockerId}`);
-        window.location.href = `LockerDetails.html?lockerId=${lockerId}`; // Pass lockerId to the URL
+        console.log(`Locker row clicked with lockerId and lockerBoxId: ${lockerId}, ${lockerBoxId}`);
+        // Pass both lockerId and lockerBoxId to LockerDetails.html
+        window.location.href = `LockerDetails.html?lockerId=${lockerId}&lockerBoxId=${lockerBoxId}`;
       });
 
       lockersTable.appendChild(row);

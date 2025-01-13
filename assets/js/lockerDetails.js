@@ -1,40 +1,97 @@
-// lockerDetails.js
-window.onload = () => {
+// Import Firebase functions
+import { initializeApp } from "https://www.gstatic.com/firebasejs/9.1.1/firebase-app.js";
+import { getFirestore, doc, collection, query, where, onSnapshot, getDocs } from "https://www.gstatic.com/firebasejs/9.1.1/firebase-firestore.js";
 
-    const lockerDetails = {
-      lockerName: "LockerBox 1",
-      lockerType: "Standard",
-      availableLockers: 15,
-      maintenanceStatus: "Not in Maintenance",
-      lockerLocation: "Location A"
-    };
+// Initialize Firebase
+const firebaseConfig = {
+  apiKey: "AIzaSyBvtimcrmdl7RuIKzLJDoZMnwZctlZgXig",
+  authDomain: "smartlocker-b8ec3.firebaseapp.com",
+  projectId: "smartlocker-b8ec3",
+  storageBucket: "smartlocker-b8ec3.firebasestorage.app",
+  messagingSenderId: "782740657417",
+  appId: "1:782740657417:web:39a4c953422b53dc05efd8"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
+window.onload = () => {
+  // Get lockerId and lockerBoxId from the URL
+  const urlParams = new URLSearchParams(window.location.search);
+  const lockerId = urlParams.get("lockerId");
+  const lockerBoxId = urlParams.get("lockerBoxId");
+
+  if (!lockerId || !lockerBoxId) {
+    alert("Locker ID or LockerBox ID not provided in the URL.");
+    return;
+  }
+
+  // Fetch Locker details and logs
+  fetchLockerDetails(lockerBoxId, lockerId);
+  fetchLockerLogs(lockerBoxId, lockerId);
+};
+
+// Fetch Locker details using Firestore
+function fetchLockerDetails(lockerBoxId, lockerId) {
+  console.log(`Fetching Locker details for lockerId: ${lockerId} in LockerBox: ${lockerBoxId}`);
   
-    // Set Locker Details in the DOM
-    document.getElementById("lockerName").innerText = lockerDetails.lockerName;
-    document.getElementById("lockerType").innerText = lockerDetails.lockerType;
-    document.getElementById("availableLockers").innerText = lockerDetails.availableLockers;
-    document.getElementById("maintenanceStatus").innerText = lockerDetails.maintenanceStatus;
-    document.getElementById("lockerLocation").innerText = lockerDetails.lockerLocation;
-  
-    // Example: Populate locker logs dynamically
-    const lockerLogs = [
-      { id: 1, action: "Maintenance Check", date: "2025-01-01", details: "Checked the functionality of available lockers." },
-      { id: 2, action: "Repair", date: "2025-01-05", details: "Repaired malfunctioning locker." },
-      { id: 3, action: "Re-stock", date: "2025-01-10", details: "Added more available lockers to LockerBox 1." }
-    ];
-  
-    const tableBody = document.getElementById("lockerLogsTable");
-    
-    // Insert log rows dynamically into the table
-    lockerLogs.forEach(log => {
+  const lockerRef = doc(db, "LockerBoxes", lockerBoxId, "Lockers", lockerId);
+
+  // Real-time listener for Locker details
+  onSnapshot(lockerRef, (docSnap) => {
+    if (docSnap.exists()) {
+      const lockerData = docSnap.data();
+
+      // Fill in Locker details in the HTML
+      document.querySelector("#lockerName").textContent = lockerData.name || "N/A";
+      document.querySelector("#lockerType").textContent = lockerData.type || "N/A";
+      document.querySelector("#availableLockers").textContent = lockerData.availableLockers || "N/A";
+      document.querySelector("#maintenanceStatus").textContent = lockerData.maintenance ? "Yes" : "No";
+      document.querySelector("#lockerLocation").textContent = lockerData.location || "Location Not Available";
+    } else {
+      console.log(`No document found for lockerId: ${lockerId} in LockerBox: ${lockerBoxId}`);
+    }
+  });
+}
+
+// Fetch Locker logs using Firestore
+async function fetchLockerLogs(lockerBoxId, lockerId) {
+  console.log(`Fetching Locker logs for lockerId: ${lockerId} in LockerBox: ${lockerBoxId}`);
+
+  const logsTable = document.getElementById("lockerLogsTable");
+  logsTable.innerHTML = ""; // Clear previous rows
+
+  try {
+    const logsRef = collection(db, "LockerBoxes", lockerBoxId, "Lockers", lockerId, "Logs");
+    const snapshot = await getDocs(logsRef);
+
+    // Iterate over logs and create table rows
+    snapshot.forEach((logDoc) => {
+      const logData = logDoc.data();
+      const action = logData.action || "N/A";
+      const timestamp = logData.timestamp?.toDate()?.toLocaleString() || "N/A";
+      const userId = logData.userId || "N/A";
+
       const row = document.createElement("tr");
+
+      // Add class based on action
+      if (action === "occupied") {
+        row.classList.add("row-occupied");
+      } else if (action === "available") {
+        row.classList.add("row-available");
+      } else if (action === "maintenance") {
+        row.classList.add("row-maintenance");
+      }
+
       row.innerHTML = `
-        <td>${log.id}</td>
-        <td>${log.action}</td>
-        <td>${log.date}</td>
-        <td>${log.details}</td>
+        <td>${logData.id}</td>
+        <td>${action}</td>
+        <td>${timestamp}</td>
+        <td>${userId}</td>
       `;
-      tableBody.appendChild(row);
+      logsTable.appendChild(row);
     });
-  };
-  
+  } catch (error) {
+    console.error("Error fetching locker logs:", error);
+  }
+}

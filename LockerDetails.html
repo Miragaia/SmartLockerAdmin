@@ -15,13 +15,13 @@
     
     <!-- Locker Details Section (Centered) -->
     <div class="card mt-4 locker-details-card">
-      <div class="card-header text-center">LockerBox Details</div>
+      <div class="card-header text-center">Locker Details</div>
       <div class="card-body">
-        <p><strong>LockerBox Name:</strong> <span id="lockerName">LockerBox 1</span></p>
-        <p><strong>LockerBox Type:</strong> <span id="lockerType">Standard</span></p>
-        <p><strong>Available Lockers:</strong> <span id="availableLockers">15</span></p>
-        <p><strong>Maintenance:</strong> <span id="maintenanceStatus">Not in Maintenance</span></p>
-        <p><strong>Location:</strong> <span id="lockerLocation">Location A</span></p>
+        <p><strong>Locker Name:</strong> <span id="lockerName">Loading...</span></p>
+        <p><strong>Locker Type:</strong> <span id="lockerType">Loading...</span></p>
+        <p><strong>Available Lockers:</strong> <span id="availableLockers">Loading...</span></p>
+        <p><strong>Maintenance:</strong> <span id="maintenanceStatus">Loading...</span></p>
+        <p><strong>Location:</strong> <span id="lockerLocation">Loading...</span></p>
       </div>
     </div>
 
@@ -47,6 +47,8 @@
   </div>
 
   <!-- Link to JavaScript -->
-  <script src="assets/js/lockerDetails.js"></script>
+  <script type="module" src="https://www.gstatic.com/firebasejs/9.1.1/firebase-app.js"></script>
+  <script type="module" src="https://www.gstatic.com/firebasejs/9.1.1/firebase-firestore.js"></script>
+  <script type="module" src="assets/js/lockerDetails.js"></script>
 </body>
 </html>
