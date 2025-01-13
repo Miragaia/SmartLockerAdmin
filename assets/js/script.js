@@ -1,4 +1,3 @@
-// Import required Firebase modules
 import { initializeApp } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-app.js";
 import {
   getFirestore,
@@ -34,7 +33,7 @@ function populateTable(snapshot) {
 
     // Add a row to the table
     const row = `
-      <tr data-lockerbox="${name}">
+      <tr data-lockerbox-id="${doc.id}">
         <td>${name}</td>
         <td>${availableLockers}</td>
         <td>${inMaintenance}</td>
@@ -57,9 +56,9 @@ function makeRowsClickable() {
   const rows = document.querySelectorAll("#lockerBoxesTable tr");
   rows.forEach((row) => {
     row.addEventListener("click", () => {
-      const lockerBoxName = row.getAttribute("data-lockerbox");
-      if (lockerBoxName) {
-        window.location.href = `LockerBoxDetails.html?name=${encodeURIComponent(lockerBoxName)}`;
+      const lockerBoxId = row.getAttribute("data-lockerbox-id");
+      if (lockerBoxId) {
+        window.location.href = `LockerBoxDetails.html?id=${encodeURIComponent(lockerBoxId)}`;
       }
     });
   });

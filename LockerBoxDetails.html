@@ -26,9 +26,7 @@
 </head>
 <body>
   <!-- Back Arrow -->
-  <a href="index.html" class="back-arrow">
-    &#8592;
-  </a>
+  <a href="index.html" class="back-arrow">&#8592;</a>
 
   <div class="container">
     <h1 class="text-center">LockerBox Details</h1>
@@ -40,12 +38,8 @@
         <div class="card">
           <div class="card-body">
             <h4>LockerBox Information</h4>
-            <ul class="list-group">
-              <li class="list-group-item"><strong>Name:</strong> LockerBox 1</li>
-              <li class="list-group-item"><strong>Type:</strong> Standard</li>
-              <li class="list-group-item"><strong>Location:</strong> Location A</li>
-              <li class="list-group-item"><strong>Available Lockers:</strong> 15</li>
-              <li class="list-group-item"><strong>Maintenance:</strong> True</li>
+            <ul class="list-group" id="lockerInfo">
+              <!-- LockerBox details will be populated here via JavaScript -->
             </ul>
             <a href="LockerBoxLogs.html" class="btn btn-primary mt-3">View Logs</a>
           </div>
@@ -73,93 +67,104 @@
             </tr>
           </thead>
           <tbody id="lockersTable">
-            <!-- Example data -->
-            <tr class="locker-row" data-id="1" data-status="Unlocked">
-              <td>Locker 1</td>
-              <td>2025-01-01 12:00:00</td>
-              <td>Unlocked</td>
-              <td>-</td>
-              <td>-</td>
-            </tr>
-            <tr class="locker-row" data-id="2" data-status="Locked">
-              <td>Locker 2</td>
-              <td>2025-01-02 14:30:00</td>
-              <td>Locked</td>
-              <td>User123</td>
-              <td>ABC123</td>
-            </tr>
-            <tr class="locker-row" data-id="3" data-status="Maintenance">
-              <td>Locker 3</td>
-              <td>2025-01-03 16:45:00</td>
-              <td>Maintenance</td>
-              <td>-</td>
-              <td>-</td>
-            </tr>
-            <tr class="locker-row" data-id="4" data-status="Unlocked">
-              <td>Locker 4</td>
-              <td>2025-01-04 10:15:00</td>
-              <td>Unlocked</td>
-              <td>-</td>
-              <td>-</td>
-            </tr>
+            <!-- Locker rows will be populated here via JavaScript -->
           </tbody>
         </table>
       </div>
     </div>
   </div>
 
+  <!-- Firebase connection script -->
   <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
   <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
   <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCzRBN_tYwUf-xraiF8XGdyy5RezfWYM5s"></script>
+  <script type="module" src="assets/js/LockerBoxDetails.js"></script>
+  <script type="module" src="firebase/firebase.js"></script>
 
-  <!-- JavaScript for Map -->
-  <script>
-    function initMap() {
-      // Coordinates for LockerBox Location (replace with actual coordinates)
-      const lockerLocation = { lat: 37.7749, lng: -122.4194 };
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-app.js";
+    import {
+      getFirestore,
+      doc,
+      getDoc,
+      getDocs,
+      collection,
+    } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-firestore.js";
 
-      // Initialize the map
+    const firebaseConfig = {
+      apiKey: "AIzaSyBvtimcrmdl7RuIKzLJDoZMnwZctlZgXig",
+      authDomain: "smartlocker-b8ec3.firebaseapp.com",
+      projectId: "smartlocker-b8ec3",
+      storageBucket: "smartlocker-b8ec3.firebasestorage.app",
+      messagingSenderId: "782740657417",
+      appId: "1:782740657417:web:39a4c953422b53dc05efd8"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    // Function to get LockerBox details from Firestore based on lockerId
+    async function fetchLockerBoxDetails(lockerBoxId) {
+      console.log(`Fetching LockerBox details for lockerBoxId: ${lockerBoxId}`);
+      const lockerBoxRef = doc(db, "LockerBoxes", lockerBoxId); // Get the document reference for the lockerBox
+      const docSnap = await getDoc(lockerBoxRef); // Get the document snapshot
+
+      if (docSnap.exists()) {
+        console.log(`LockerBox details found for lockerBoxId: ${lockerBoxId}`);
+        const lockerBoxData = docSnap.data();
+        // Fill in the lockerBox details in the HTML
+        const lockerInfoList = document.querySelector("#lockerInfo");
+        lockerInfoList.innerHTML = `
+          <li class="list-group-item"><strong>Locker Box ID:</strong> ${lockerBoxId}</li>
+          <li class="list-group-item"><strong>Locker Box Name:</strong> ${lockerBoxData.name}</li>
+          <li class="list-group-item"><strong>Available Lockers:</strong> ${lockerBoxData.availableLockers}</li>
+          <li class="list-group-item"><strong>Maintenance:</strong> ${lockerBoxData.maintenance}</li>
+          <li class="list-group-item"><strong>Locker Box Type:</strong> ${lockerBoxData.lockerBoxType }</li>
+        `;
+      } else {
+        console.log(`No document found for lockerBoxId: ${lockerBoxId}`);
+      }
+    }
+
+    // Initialize Map
+    function initMap(lockerBoxLocation) {
       const map = new google.maps.Map(document.getElementById("map"), {
         zoom: 14,
-        center: lockerLocation,
+        center: lockerBoxLocation,
       });
 
-      // Add a marker for the LockerBox location
       const marker = new google.maps.Marker({
-        position: lockerLocation,
+        position: lockerBoxLocation,
         map: map,
         title: "LockerBox Location",
       });
     }
 
-    // Load the map when the page is fully loaded
-    document.addEventListener("DOMContentLoaded", initMap);
-  </script>
+    // Get lockerBoxId from URL parameters
+    function getLockerBoxIdFromURL() {
+      const urlParams = new URLSearchParams(window.location.search);
+      const lockerBoxId = urlParams.get("id");
+      console.log(`LockerBoxId from URL: ${lockerBoxId}`);
+      return lockerBoxId;
+    }
 
-  <!-- JavaScript to dynamically apply row styles and handle clicks -->
-  <script>
+    // Load LockerBox details based on lockerBoxId from URL
     document.addEventListener("DOMContentLoaded", () => {
-      const rows = document.querySelectorAll(".locker-row");
-      rows.forEach(row => {
-        const status = row.dataset.status;
-        const lockerId = row.dataset.id;
-        
-        // Apply row styles based on status
-        if (status === "Locked") {
-          row.classList.add("status-locked");
-        } else if (status === "Unlocked") {
-          row.classList.add("status-unlocked");
-        } else if (status === "Maintenance") {
-          row.classList.add("status-maintenance");
-        }
+      const lockerBoxId = getLockerBoxIdFromURL(); // Get lockerBoxId from URL
 
-        // Add click event to redirect to LockerDetails page
-        row.addEventListener("click", () => {
-          window.location.href = `LockerDetails.html?locker=${lockerId}`;
-        });
-      });
+      if (lockerBoxId) {
+        console.log(`LockerBoxId found in URL: ${lockerBoxId}`);
+        fetchLockerBoxDetails(lockerBoxId); // Fetch LockerBox details
+
+        // You can update the map location using the location data from Firestore
+        const lockerBoxLocation = { lat: 37.7749, lng: -122.4194 }; // Replace with the actual location from Firestore
+        initMap(lockerBoxLocation); // Initialize map
+      } else {
+        console.log("No lockerBoxId found in URL.");
+      }
     });
   </script>
+
 </body>
 </html>
