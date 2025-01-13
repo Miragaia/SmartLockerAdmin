@@ -1,6 +1,6 @@
 // Import Firebase functions
 import { initializeApp } from "https://www.gstatic.com/firebasejs/9.1.1/firebase-app.js";
-import { getFirestore, doc, collection, query, where, onSnapshot, getDocs } from "https://www.gstatic.com/firebasejs/9.1.1/firebase-firestore.js";
+import { getFirestore, doc, collection, query, where, onSnapshot, getDocs, updateDoc, addDoc, increment, serverTimestamp  } from "https://www.gstatic.com/firebasejs/9.1.1/firebase-firestore.js";
 
 // Initialize Firebase
 const firebaseConfig = {
@@ -140,3 +140,41 @@ function setupFilters(logs) {
   actionFilter.addEventListener("change", filterLogs);
   timestampFilter.addEventListener("change", filterLogs);
 }
+
+document.getElementById("setMaintenance").addEventListener("click", async () => {
+  const urlParams = new URLSearchParams(window.location.search);
+  const lockerId = urlParams.get("lockerId");
+  const lockerBoxId = urlParams.get("lockerBoxId");
+
+  if (!lockerId || !lockerBoxId) {
+    alert("Locker ID or LockerBox ID not provided in the URL.");
+    return;
+  }
+
+  const lockerRef = doc(db, "LockerBoxes", lockerBoxId, "Lockers", lockerId);
+  const lockerBoxRef = doc(db, "LockerBoxes", lockerBoxId);
+  const logsRef = collection(db, "LockerBoxes", lockerBoxId, "Lockers", lockerId, "Logs");
+
+  try {
+    // Update the locker status to "maintenance"
+    await updateDoc(lockerRef, { status: "maintenance" });
+
+    // Decrement the availableLockers count in LockerBox
+    await updateDoc(lockerBoxRef, {
+      availableLockers: increment(-1),
+    });
+
+    // Add a log entry for this action
+    await addDoc(logsRef, {
+      action: "maintenance",
+      userId: "Admin",
+      timestamp: serverTimestamp(),
+    });
+
+    alert("Locker set to maintenance successfully!");
+  } catch (error) {
+    console.error("Error setting locker to maintenance:", error);
+    alert("Failed to set locker to maintenance. Please try again.");
+  }
+});
+
