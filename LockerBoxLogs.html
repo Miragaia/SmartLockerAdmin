@@ -17,11 +17,22 @@
     .back-arrow:hover {
       text-decoration: underline;
     }
+
+    .row-occupied {
+      background-color: #f4b5bb; /* Light red for occupied */
+    }
+    .row-available {
+      background-color: #bdf4ca; /* Light green for available */
+    }
+    .row-maintenance {
+      background-color: #fff3cd; /* Light yellow for maintenance */
+    }
+
   </style>
 </head>
 <body>
   <!-- Back Arrow -->
-  <a href="LockerBoxDetails.html" class="back-arrow">
+  <a id="backArrow" href="#" class="back-arrow">
     &#8592;
   </a>
 
@@ -36,9 +47,9 @@
       <div class="col-md-4">
         <select id="actionFilter" class="form-control">
           <option value="">Filter by Action</option>
-          <option value="Unlock">Unlock</option>
-          <option value="Lock">Lock</option>
-          <option value="Maintenance">Maintenance</option>
+          <option value="occupied">Occupied</option>
+          <option value="available">Available</option>
+          <option value="maintenance">Maintenance</option>
         </select>
       </div>
       <div class="col-md-4">
@@ -48,7 +59,7 @@
 
     <!-- Logs Table -->
     <div class="table-responsive mt-4">
-      <table class="table table-striped">
+      <table class="table">
         <thead>
           <tr>
             <th scope="col">Locker ID</th>
@@ -66,5 +77,17 @@
 
   <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
   <script type="module" src="assets/js/LockerBoxLogs.js"></script>
+  <script>
+    // Example: Replace with the actual method to get the LockerBoxId
+    const lockerBoxId = new URLSearchParams(window.location.search).get('lockerBoxId');
+    console.log('LockerBoxId:', lockerBoxId);
+  
+    if (lockerBoxId) {
+      const backArrow = document.getElementById('backArrow');
+      backArrow.href = `LockerBoxDetails.html?id=${lockerBoxId}`;
+    } else {
+      console.warn('LockerBoxId not found in the current URL.');
+    }
+  </script>
 </body>
 </html>

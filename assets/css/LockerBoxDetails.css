@@ -137,6 +137,7 @@ body {
     transition: background-color 0.3s ease, box-shadow 0.3s ease; 
     text-decoration: none; 
     display: inline-block;
+    margin-top: 10px;
     
   }
   

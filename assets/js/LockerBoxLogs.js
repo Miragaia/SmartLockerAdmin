@@ -29,45 +29,56 @@ function getLockerBoxIdFromURL() {
 
 // Fetch logs for all lockers in a LockerBox
 async function fetchLockerLogs(lockerBoxId) {
-  const logsTable = document.getElementById("logsTable");
-  logsTable.innerHTML = ""; // Clear previous rows
-
-  try {
-    const lockersCollectionRef = collection(db, "LockerBoxes", lockerBoxId, "Lockers");
-    const lockerLogsPromises = [];
-
-    // Fetch all lockers in the LockerBox
-    const lockersSnapshot = await getDocs(lockersCollectionRef);
-    lockersSnapshot.forEach(lockerDoc => {
-      const lockerId = lockerDoc.id;
-      const logsRef = collection(db, "LockerBoxes", lockerBoxId, "Lockers", lockerId, "Logs");
-      lockerLogsPromises.push(getDocs(logsRef).then(snapshot => ({ lockerId, snapshot })));
-    });
-
-    // Fetch logs for all lockers concurrently
-    const lockerLogs = await Promise.all(lockerLogsPromises);
-
-    lockerLogs.forEach(({ lockerId, snapshot }) => {
-      snapshot.forEach(logDoc => {
-        const logData = logDoc.data();
-        const action = logData.action || "N/A";
-        const timestamp = logData.timestamp?.toDate()?.toLocaleString() || "N/A";
-        const userId = logData.userId || "N/A";
-
-        const row = document.createElement("tr");
-        row.innerHTML = `
-          <td>${lockerId}</td>
-          <td>${action}</td>
-          <td>${timestamp}</td>
-          <td>${userId}</td>
-        `;
-        logsTable.appendChild(row);
+    const logsTable = document.getElementById("logsTable");
+    logsTable.innerHTML = ""; // Clear previous rows
+  
+    try {
+      const lockersCollectionRef = collection(db, "LockerBoxes", lockerBoxId, "Lockers");
+      const lockerLogsPromises = [];
+  
+      // Fetch all lockers in the LockerBox
+      const lockersSnapshot = await getDocs(lockersCollectionRef);
+      lockersSnapshot.forEach(lockerDoc => {
+        const lockerId = lockerDoc.id;
+        const logsRef = collection(db, "LockerBoxes", lockerBoxId, "Lockers", lockerId, "Logs");
+        lockerLogsPromises.push(getDocs(logsRef).then(snapshot => ({ lockerId, snapshot })));
       });
-    });
-  } catch (error) {
-    console.error("Error fetching locker logs:", error);
+  
+      // Fetch logs for all lockers concurrently
+      const lockerLogs = await Promise.all(lockerLogsPromises);
+  
+      lockerLogs.forEach(({ lockerId, snapshot }) => {
+        snapshot.forEach(logDoc => {
+          const logData = logDoc.data();
+          const action = logData.action || "N/A";
+          const timestamp = logData.timestamp?.toDate()?.toLocaleString() || "N/A";
+          const userId = logData.userId || "N/A";
+  
+          const row = document.createElement("tr");
+  
+          // Add class based on action
+          if (action === "occupied") {
+            row.classList.add("row-occupied");
+          } else if (action === "available") {
+            row.classList.add("row-available");
+          } else if (action === "maintenance") {
+            row.classList.add("row-maintenance");
+          }
+  
+          row.innerHTML = `
+            <td>${lockerId}</td>
+            <td>${action}</td>
+            <td>${timestamp}</td>
+            <td>${userId}</td>
+          `;
+          logsTable.appendChild(row);
+        });
+      });
+    } catch (error) {
+      console.error("Error fetching locker logs:", error);
+    }
   }
-}
+  
 
 // Add filter functionality
 function setupFilters() {
