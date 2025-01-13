@@ -153,6 +153,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   const lockerRef = doc(db, "LockerBoxes", lockerBoxId, "Lockers", lockerId);
   const lockerBoxRef = doc(db, "LockerBoxes", lockerBoxId);
+  const credentialsRef = doc(db, "LockerBoxes", lockerBoxId, "Lockers", lockerId, "Credentials", "DEFAULT");
   const logsRef = collection(db, "LockerBoxes", lockerBoxId, "Lockers", lockerId, "Logs");
   const button = document.getElementById("statusToggleButton");
 
@@ -174,11 +175,13 @@ document.addEventListener("DOMContentLoaded", async () => {
         let newStatus = "";
         let action = "";
         let lockerBoxUpdate = {};
+        let resetAccessCode = false;
 
         if (currentStatus === "occupied" || currentStatus === "available") {
           newStatus = "maintenance";
           action = "Set to Maintenance";
           lockerBoxUpdate = { availableLockers: increment(-1) };
+          resetAccessCode = true;
         } else if (currentStatus === "maintenance") {
           newStatus = "available";
           action = "Set Available";
@@ -190,6 +193,11 @@ document.addEventListener("DOMContentLoaded", async () => {
 
         // Update LockerBox available lockers
         await updateDoc(lockerBoxRef, lockerBoxUpdate);
+
+        // If setting to maintenance, reset the accessCode to null
+        if (resetAccessCode) {
+          await updateDoc(credentialsRef, { accessCode: "" });
+        }
 
         // Add a log entry
         await addDoc(logsRef, {
@@ -224,4 +232,5 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
   }
 });
+
 
