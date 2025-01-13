@@ -1,91 +1,200 @@
 /* Basic styling for LockerDetails page */
 .container {
-    margin-top: 30px;
-    font-family: Arial, sans-serif;
-  }
-  
-  .card {
-    margin-top: 20px;
-  }
-  
-  .card-header {
-    font-size: 1.25rem;
-    font-weight: bold;
-    background-color: #da9227; 
-    color: white; 
-    text-align: center;
-  }
-  
-  .card-body {
-    font-size: 1rem;
-    background-color: #f7f7f7; 
-    padding: 15px;
-  }
-  
-  table th, table td {
-    text-align: center;
-    vertical-align: middle;
-  }
-  
-  /* Locker Details Section */
-  .locker-details-card {
-    max-width: 600px; 
-    margin-top: 50px; 
-    padding: 20px; 
-    margin-left: auto;
-    margin-right: auto; 
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    border-radius: 8px; 
-    background-color: #ffffff;
-  }
-  
-  /* Button Styles */
-  button {
-    margin-top: 20px;
-    background-color: #4CAF50;
-    color: white;
-    border: none;
-    padding: 10px 20px;
-    border-radius: 4px; 
-    cursor: pointer;
-  }
-  
-  button:hover {
-    background-color: #45a049;
-  }
-  
-  /* Locker Logs Section */
-  .card + .card {
-    margin-top: 20px;
-  }
-  
-  .card-header {
-    background-color: #f8c471; 
-    color: #1f3a3d; 
-  }
-  
-  .card-body {
-    background-color: #ffffff;
-    padding: 20px;
-  }
-  
-  /* Additional optional styles for table */
-  .table-striped tbody tr:nth-of-type(odd) {
-    background-color: #f9f9f9;
-  }
-  
-  .table th, .table td {
-    border: 1px solid #ddd; 
-  }
-  
-  /* Table header styling */
-  .table th {
-    background-color: #da9227;
-    color: black; 
-  }
-  
-  /* Table row hover effect */
-  .table tbody tr:hover {
-    background-color: #eaf2e0; 
-  }
-  
+  margin-top: 30px;
+  font-family: Arial, sans-serif;
+}
+
+.card {
+  margin-top: 20px;
+}
+
+.card-header {
+  font-size: 1.25rem;
+  font-weight: bold;
+  background-color: #da9227; 
+  color: white; 
+  text-align: center;
+}
+
+.card-body {
+  font-size: 1rem;
+  background-color: #f7f7f7; 
+  padding: 15px;
+}
+
+table th, table td {
+  text-align: center;
+  vertical-align: middle;
+}
+
+/* Locker Details Section */
+.locker-details-card {
+  max-width: 600px; 
+  margin-top: 50px; 
+  padding: 20px; 
+  margin-left: auto;
+  margin-right: auto; 
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  border-radius: 8px; 
+  background-color: #ffffff;
+}
+
+/* Button Styles */
+button {
+  margin-top: 20px;
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 4px; 
+  cursor: pointer;
+}
+
+button:hover {
+  background-color: #45a049;
+}
+
+/* Locker Logs Section */
+.card + .card {
+  margin-top: 20px;
+}
+
+.card-header {
+  background-color: #f8c471; 
+  color: #1f3a3d; 
+}
+
+.card-body {
+  background-color: #ffffff;
+  padding: 20px;
+}
+
+/* Additional optional styles for table */
+.table-striped tbody tr:nth-of-type(odd) {
+  background-color: #f9f9f9;
+}
+
+.table th, .table td {
+  border: 1px solid #ddd; 
+}
+
+/* Table header styling */
+.table th {
+  background-color: #da9227;
+  color: black; 
+}
+
+/* Table row hover effect */
+.table tbody tr:hover {
+  background-color: #eaf2e0; 
+}
+
+/* Color-coded rows for status */
+.row-occupied {
+  background-color: #f4b5bb; /* Light red for occupied */
+}
+
+.row-available {
+  background-color: #bdf4ca; /* Light green for available */
+}
+
+.row-maintenance {
+  background-color: #fff3cd; /* Light yellow for maintenance */
+}
+
+/* Filters */
+#lockerIdInput,
+#actionFilter,
+#timestampFilter {
+  border: 2px solid #ddd;
+  border-radius: 5px;
+  font-size: 1rem;
+  padding: 10px;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+#lockerIdInput:focus,
+#actionFilter:focus,
+#timestampFilter:focus {
+  border-color: #007bff;
+  box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+  outline: none;
+}
+
+/* Table */
+.table {
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  overflow: hidden;
+}
+
+.table thead th {
+  background-color: #da9227;
+  color: #333;
+  font-weight: bold;
+  text-align: center;
+}
+
+.table tbody td {
+  text-align: center;
+}
+
+.table-striped tbody tr:nth-of-type(odd) {
+  background-color: #f9f9f9;
+}
+
+.table-striped tbody tr:hover {
+  background-color: #f1f1f1;
+}
+
+/* Responsive Table */
+.table-responsive {
+  margin-top: 20px;
+  border-radius: 5px;
+  overflow: hidden;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Container */
+.container {
+  max-width: 1200px;
+  margin: auto;
+  padding: 20px;
+}
+
+/* General Body Styling */
+body {
+  font-family: 'Arial', sans-serif;
+  background-color: #f7f7f7;
+  color: #333;
+  margin: 0;
+  padding: 0;
+}
+
+/* Placeholder Text Styling */
+::placeholder {
+  color: #aaa;
+  font-style: italic;
+}
+
+/* Custom styling for locker details section */
+.locker-details-section {
+  background-color: #f0f8ff;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.locker-details-section h2 {
+  color: #4CAF50;
+}
+
+.locker-details-section p {
+  font-size: 1.1rem;
+  color: #555;
+}
+
+/* Styling for when userId is missing */
+#userIdRow {
+  display: none; /* Hide the row by default */
+}
