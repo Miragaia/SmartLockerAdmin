@@ -32,6 +32,7 @@ function getLockerBoxIdFromURL() {
 async function fetchLockerLogs(lockerBoxId) {
   const logsTable = document.getElementById("logsTable");
   logsTable.innerHTML = ""; // Clear previous rows
+  const allLogs = []; // Global array to store all logs
 
   try {
     const lockersCollectionRef = collection(db, "LockerBoxes", lockerBoxId, "Lockers");
@@ -45,54 +46,62 @@ async function fetchLockerLogs(lockerBoxId) {
 
       // Real-time listener for logs in this locker
       onSnapshot(logsRef, (snapshot) => {
-        // Clear existing rows for this locker to avoid duplication
-        Array.from(logsTable.rows).forEach(row => {
-          if (row.cells[0].textContent === lockerId) {
-            row.remove();
+        // Remove existing logs for this locker from the global array
+        for (let i = allLogs.length - 1; i >= 0; i--) {
+          if (allLogs[i].lockerId === lockerId) {
+            allLogs.splice(i, 1);
           }
-        });
+        }
 
-        // Collect logs from the snapshot
-        const logs = snapshot.docs.map(logDoc => {
+        // Add new logs for this locker
+        snapshot.docs.forEach(logDoc => {
           const logData = logDoc.data();
-          return {
+          allLogs.push({
             lockerId,
             action: logData.action || "N/A",
             timestamp: logData.timestamp?.toDate() || new Date(0), // Default to epoch if no timestamp
             userId: logData.userId || "N/A"
-          };
+          });
         });
 
         // Sort logs by descending timestamp
-        logs.sort((a, b) => b.timestamp - a.timestamp);
+        allLogs.sort((a, b) => b.timestamp - a.timestamp);
 
-        // Add rows for the new logs
-        logs.forEach(log => {
-          const row = document.createElement("tr");
-
-          // Add class based on action
-          if (log.action === "occupied") {
-            row.classList.add("row-occupied");
-          } else if (log.action === "available") {
-            row.classList.add("row-available");
-          } else if (log.action === "maintenance") {
-            row.classList.add("row-maintenance");
-          }
-
-          row.innerHTML = `
-            <td>${log.lockerId}</td>
-            <td>${log.action}</td>
-            <td>${log.timestamp.toLocaleString()}</td>
-            <td>${log.userId}</td>
-          `;
-          logsTable.appendChild(row);
-        });
+        // Re-render the table with sorted logs
+        renderLogsTable(allLogs, logsTable);
       });
     });
   } catch (error) {
     console.error("Error fetching locker logs:", error);
   }
 }
+
+function renderLogsTable(allLogs, logsTable) {
+  logsTable.innerHTML = ""; // Clear existing rows
+
+  allLogs.forEach(log => {
+    const row = document.createElement("tr");
+
+    // Add class based on action
+    if (log.action === "occupied") {
+      row.classList.add("row-occupied");
+    } else if (log.action === "available") {
+      row.classList.add("row-available");
+    } else if (log.action === "maintenance") {
+      row.classList.add("row-maintenance");
+    }
+
+    row.innerHTML = `
+      <td>${log.lockerId}</td>
+      <td>${log.action}</td>
+      <td>${log.timestamp.toLocaleString()}</td>
+      <td>${log.userId}</td>
+    `;
+    logsTable.appendChild(row);
+  });
+}
+
+
 
 
   
