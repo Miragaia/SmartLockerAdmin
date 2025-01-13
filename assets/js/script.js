@@ -7,12 +7,13 @@ import {
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
-  apiKey: "AIzaSyBvtimcrmdl7RuIKzLJDoZMnwZctlZgXig",
-  authDomain: "smartlocker-b8ec3.firebaseapp.com",
-  projectId: "smartlocker-b8ec3",
-  storageBucket: "smartlocker-b8ec3.firebasestorage.app",
-  messagingSenderId: "782740657417",
-  appId: "1:782740657417:web:39a4c953422b53dc05efd8"
+  apiKey: "AIzaSyAW7qL7U-Vxp5O5sweZwN8HtbhE0eFJXls",
+  authDomain: "teste-60800.firebaseapp.com",
+  projectId: "teste-60800",
+  storageBucket: "teste-60800.firebasestorage.app",
+  messagingSenderId: "166775684487",
+  appId: "1:166775684487:web:4e1ca049517bc0c5632722",
+  measurementId: "G-HJVJ6ZTFGB"
 };
 
 // Initialize Firebase
