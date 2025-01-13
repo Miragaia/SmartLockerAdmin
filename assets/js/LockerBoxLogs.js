@@ -5,6 +5,7 @@ import {
   getDocs,
   query,
   where,
+  onSnapshot,
 } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-firestore.js";
 
 // Firebase configuration
@@ -33,62 +34,66 @@ async function fetchLockerLogs(lockerBoxId) {
   logsTable.innerHTML = ""; // Clear previous rows
 
   try {
-      const lockersCollectionRef = collection(db, "LockerBoxes", lockerBoxId, "Lockers");
-      const lockerLogsPromises = [];
+    const lockersCollectionRef = collection(db, "LockerBoxes", lockerBoxId, "Lockers");
 
-      // Fetch all lockers in the LockerBox
-      const lockersSnapshot = await getDocs(lockersCollectionRef);
-      lockersSnapshot.forEach(lockerDoc => {
-          const lockerId = lockerDoc.id;
-          const logsRef = collection(db, "LockerBoxes", lockerBoxId, "Lockers", lockerId, "Logs");
-          lockerLogsPromises.push(getDocs(logsRef).then(snapshot => ({ lockerId, snapshot })));
-      });
+    // Fetch all lockers in the LockerBox
+    const lockersSnapshot = await getDocs(lockersCollectionRef);
 
-      // Fetch logs for all lockers concurrently
-      const lockerLogs = await Promise.all(lockerLogsPromises);
+    lockersSnapshot.forEach(lockerDoc => {
+      const lockerId = lockerDoc.id;
+      const logsRef = collection(db, "LockerBoxes", lockerBoxId, "Lockers", lockerId, "Logs");
 
-      // Collect all logs in a single array and include the lockerId for each log
-      const allLogs = [];
-      lockerLogs.forEach(({ lockerId, snapshot }) => {
-          snapshot.forEach(logDoc => {
-              const logData = logDoc.data();
-              allLogs.push({
-                  lockerId,
-                  action: logData.action || "N/A",
-                  timestamp: logData.timestamp?.toDate() || new Date(0), // Use a default date if timestamp is missing
-                  userId: logData.userId || "N/A"
-              });
-          });
-      });
+      // Real-time listener for logs in this locker
+      onSnapshot(logsRef, (snapshot) => {
+        // Clear existing rows for this locker to avoid duplication
+        Array.from(logsTable.rows).forEach(row => {
+          if (row.cells[0].textContent === lockerId) {
+            row.remove();
+          }
+        });
 
-      // Sort logs by descending timestamp
-      allLogs.sort((a, b) => b.timestamp - a.timestamp);
+        // Collect logs from the snapshot
+        const logs = snapshot.docs.map(logDoc => {
+          const logData = logDoc.data();
+          return {
+            lockerId,
+            action: logData.action || "N/A",
+            timestamp: logData.timestamp?.toDate() || new Date(0), // Default to epoch if no timestamp
+            userId: logData.userId || "N/A"
+          };
+        });
 
-      // Populate the table with sorted logs
-      allLogs.forEach(log => {
+        // Sort logs by descending timestamp
+        logs.sort((a, b) => b.timestamp - a.timestamp);
+
+        // Add rows for the new logs
+        logs.forEach(log => {
           const row = document.createElement("tr");
 
           // Add class based on action
           if (log.action === "occupied") {
-              row.classList.add("row-occupied");
+            row.classList.add("row-occupied");
           } else if (log.action === "available") {
-              row.classList.add("row-available");
+            row.classList.add("row-available");
           } else if (log.action === "maintenance") {
-              row.classList.add("row-maintenance");
+            row.classList.add("row-maintenance");
           }
 
           row.innerHTML = `
-              <td>${log.lockerId}</td>
-              <td>${log.action}</td>
-              <td>${log.timestamp.toLocaleString()}</td>
-              <td>${log.userId}</td>
+            <td>${log.lockerId}</td>
+            <td>${log.action}</td>
+            <td>${log.timestamp.toLocaleString()}</td>
+            <td>${log.userId}</td>
           `;
           logsTable.appendChild(row);
+        });
       });
+    });
   } catch (error) {
-      console.error("Error fetching locker logs:", error);
+    console.error("Error fetching locker logs:", error);
   }
 }
+
 
   
 
