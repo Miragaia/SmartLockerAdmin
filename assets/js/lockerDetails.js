@@ -56,37 +56,41 @@ function fetchLockerDetails(lockerBoxId, lockerId) {
   });
 }
 
-// Fetch Locker logs and filter based on user input
-async function fetchLockerLogs(lockerBoxId, lockerId) {
+
+function fetchLockerLogs(lockerBoxId, lockerId) {
   const logsTable = document.getElementById("lockerLogsTable");
+  const logsRef = collection(db, "LockerBoxes", lockerBoxId, "Lockers", lockerId, "Logs");
+  const logs = []; // Array to hold the logs data
+
   logsTable.innerHTML = ""; // Clear previous rows
 
-  try {
-    const logsRef = collection(db, "LockerBoxes", lockerBoxId, "Lockers", lockerId, "Logs");
-    const snapshot = await getDocs(logsRef);
+  // Real-time listener for logs
+  onSnapshot(logsRef, (snapshot) => {
+    // Clear logs array
+    logs.length = 0;
 
-    const logs = snapshot.docs.map((logDoc) => {
+    // Populate logs array with current snapshot
+    snapshot.docs.forEach((logDoc) => {
       const logData = logDoc.data();
-      return {
+      logs.push({
         id: logDoc.id,
         action: logData.action || "N/A",
         timestamp: logData.timestamp?.toDate() || new Date(0), // Use a default date if timestamp is missing
         userId: logData.userId || "N/A",
-      };
+      });
     });
 
     // Sort logs by timestamp in descending order
     logs.sort((a, b) => b.timestamp - a.timestamp);
 
-    // Display logs initially
+    // Display logs in the table
     displayLogs(logs);
 
-    // Setup filters and listen for changes
+    // Reapply filters (if any)
     setupFilters(logs);
-  } catch (error) {
-    console.error("Error fetching locker logs:", error);
-  }
+  });
 }
+
 
 // Display logs in the table
 function displayLogs(logs) {
