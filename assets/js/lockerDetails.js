@@ -68,12 +68,15 @@ async function fetchLockerLogs(lockerBoxId, lockerId) {
     const logs = snapshot.docs.map((logDoc) => {
       const logData = logDoc.data();
       return {
-        id: logData.id,
+        id: logDoc.id,
         action: logData.action || "N/A",
-        timestamp: logData.timestamp?.toDate()?.toLocaleString() || "N/A",
+        timestamp: logData.timestamp?.toDate() || new Date(0), // Use a default date if timestamp is missing
         userId: logData.userId || "N/A",
       };
     });
+
+    // Sort logs by timestamp in descending order
+    logs.sort((a, b) => b.timestamp - a.timestamp);
 
     // Display logs initially
     displayLogs(logs);
@@ -91,7 +94,6 @@ function displayLogs(logs) {
   logsTable.innerHTML = ""; // Clear previous rows
 
   logs.forEach((logData) => {
-    console.log(logData);
     const row = document.createElement("tr");
 
     if (logData.action === "occupied") {
@@ -104,7 +106,7 @@ function displayLogs(logs) {
 
     row.innerHTML = `
       <td>${logData.action}</td>
-      <td>${logData.timestamp}</td>
+      <td>${logData.timestamp.toLocaleString()}</td>
       <td>${logData.userId}</td>
     `;
     logsTable.appendChild(row);

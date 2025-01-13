@@ -29,55 +29,67 @@ function getLockerBoxIdFromURL() {
 
 // Fetch logs for all lockers in a LockerBox
 async function fetchLockerLogs(lockerBoxId) {
-    const logsTable = document.getElementById("logsTable");
-    logsTable.innerHTML = ""; // Clear previous rows
-  
-    try {
+  const logsTable = document.getElementById("logsTable");
+  logsTable.innerHTML = ""; // Clear previous rows
+
+  try {
       const lockersCollectionRef = collection(db, "LockerBoxes", lockerBoxId, "Lockers");
       const lockerLogsPromises = [];
-  
+
       // Fetch all lockers in the LockerBox
       const lockersSnapshot = await getDocs(lockersCollectionRef);
       lockersSnapshot.forEach(lockerDoc => {
-        const lockerId = lockerDoc.id;
-        const logsRef = collection(db, "LockerBoxes", lockerBoxId, "Lockers", lockerId, "Logs");
-        lockerLogsPromises.push(getDocs(logsRef).then(snapshot => ({ lockerId, snapshot })));
+          const lockerId = lockerDoc.id;
+          const logsRef = collection(db, "LockerBoxes", lockerBoxId, "Lockers", lockerId, "Logs");
+          lockerLogsPromises.push(getDocs(logsRef).then(snapshot => ({ lockerId, snapshot })));
       });
-  
+
       // Fetch logs for all lockers concurrently
       const lockerLogs = await Promise.all(lockerLogsPromises);
-  
+
+      // Collect all logs in a single array and include the lockerId for each log
+      const allLogs = [];
       lockerLogs.forEach(({ lockerId, snapshot }) => {
-        snapshot.forEach(logDoc => {
-          const logData = logDoc.data();
-          const action = logData.action || "N/A";
-          const timestamp = logData.timestamp?.toDate()?.toLocaleString() || "N/A";
-          const userId = logData.userId || "N/A";
-  
+          snapshot.forEach(logDoc => {
+              const logData = logDoc.data();
+              allLogs.push({
+                  lockerId,
+                  action: logData.action || "N/A",
+                  timestamp: logData.timestamp?.toDate() || new Date(0), // Use a default date if timestamp is missing
+                  userId: logData.userId || "N/A"
+              });
+          });
+      });
+
+      // Sort logs by descending timestamp
+      allLogs.sort((a, b) => b.timestamp - a.timestamp);
+
+      // Populate the table with sorted logs
+      allLogs.forEach(log => {
           const row = document.createElement("tr");
-  
+
           // Add class based on action
-          if (action === "occupied") {
-            row.classList.add("row-occupied");
-          } else if (action === "available") {
-            row.classList.add("row-available");
-          } else if (action === "maintenance") {
-            row.classList.add("row-maintenance");
+          if (log.action === "occupied") {
+              row.classList.add("row-occupied");
+          } else if (log.action === "available") {
+              row.classList.add("row-available");
+          } else if (log.action === "maintenance") {
+              row.classList.add("row-maintenance");
           }
-  
+
           row.innerHTML = `
-            <td>${lockerId}</td>
-            <td>${action}</td>
-            <td>${timestamp}</td>
-            <td>${userId}</td>
+              <td>${log.lockerId}</td>
+              <td>${log.action}</td>
+              <td>${log.timestamp.toLocaleString()}</td>
+              <td>${log.userId}</td>
           `;
           logsTable.appendChild(row);
-        });
       });
-    } catch (error) {
+  } catch (error) {
       console.error("Error fetching locker logs:", error);
-    }
   }
+}
+
   
 
 // Add filter functionality
