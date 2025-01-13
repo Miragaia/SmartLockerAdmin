@@ -20,25 +20,41 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
-// Function to get LockerBox details from Firestore based on lockerBoxId
 async function fetchLockerBoxDetails(lockerBoxId) {
-  console.log(`Fetching LockerBox details for lockerBoxId: ${lockerBoxId}`);
-  const lockerRef = doc(db, "LockerBoxes", lockerBoxId); // Get the document reference for the locker
-  const docSnap = await getDoc(lockerRef); // Get the document snapshot
-
-  if (docSnap.exists()) {
-    console.log(`LockerBox details found for lockerBoxId: ${lockerBoxId}`);
-    const lockerData = docSnap.data();
-    // Fill in the locker details in the HTML
-    document.querySelector("#locker-name").textContent = lockerData.name;
-    document.querySelector("#locker-type").textContent = lockerData.type;
-    document.querySelector("#locker-location").textContent = lockerData.location;
-    document.querySelector("#available-lockers").textContent = lockerData.availableLockers;
-    document.querySelector("#maintenance-status").textContent = lockerData.maintenance ? "Yes" : "No";
-  } else {
-    console.log(`No document found for lockerBoxId: ${lockerBoxId}`);
+    console.log(`Fetching LockerBox details for lockerBoxId: ${lockerBoxId}`);
+    const lockerRef = doc(db, "LockerBoxes", lockerBoxId);
+    const docSnap = await getDoc(lockerRef);
+  
+    if (docSnap.exists()) {
+      const lockerData = docSnap.data();
+  
+      // Extract location data (ensure it's an object with lat and lng)
+      const lockerLocation = lockerData.location ? {
+        lat: lockerData.location._lat,   // Extract lat from GeoPoint
+        lng: lockerData.location._long  // Extract lng from GeoPoint
+      } : { lat: 37.7749, lng: -122.4194 }; // Default fallback values if location is missing
+  
+      console.log("Using location:", lockerLocation);
+  
+      // Check if the extracted values are valid numbers
+      if (isNaN(lockerLocation.lat) || isNaN(lockerLocation.lng)) {
+        console.error("Invalid location coordinates:", lockerLocation);
+      }
+  
+      // Fill in the locker details in the HTML
+      document.querySelector("#locker-name").textContent = lockerData.name;
+      document.querySelector("#locker-type").textContent = lockerData.type;
+      document.querySelector("#locker-location").textContent = lockerData.location;
+      document.querySelector("#available-lockers").textContent = lockerData.availableLockers;
+      document.querySelector("#maintenance-status").textContent = lockerData.maintenance ? "Yes" : "No";
+  
+      // Initialize Map with actual location
+      initMap(lockerLocation);
+    } else {
+      console.log(`No document found for lockerBoxId: ${lockerBoxId}`);
+    }
   }
-}
+  
 
 // Function to fetch lockers for a specific LockerBox
 async function fetchLockers(lockerBoxId) {
@@ -87,41 +103,43 @@ async function fetchLockers(lockerBoxId) {
   }
   
 
-// Initialize Map
-function initMap(lockerLocation) {
-  console.log("Initializing map with location:", lockerLocation);
-
-  const map = new google.maps.Map(document.getElementById("map"), {
-    zoom: 14,
-    center: lockerLocation,
-  });
-
-  const marker = new google.maps.Marker({
-    position: lockerLocation,
-    map: map,
-    title: "LockerBox Location",
-  });
-}
+  function initMap(lockerLocation) {
+    // Ensure the location is valid before proceeding
+    if (isNaN(lockerLocation.lat) || isNaN(lockerLocation.lng)) {
+      console.error("Invalid locker location:", lockerLocation);
+      return;
+    }
+  
+    const map = new google.maps.Map(document.getElementById("map"), {
+      zoom: 14,
+      center: lockerLocation,
+    });
+  
+    const marker = new google.maps.Marker({
+      position: lockerLocation,
+      map: map,
+      title: "LockerBox Location",
+    });
+  }
+  
 
 // Get lockerBoxId from URL parameters
 function getLockerBoxIdFromURL() {
-  const urlParams = new URLSearchParams(window.location.search);
-  const lockerBoxId = urlParams.get("id"); // Updated to lockerBoxId
-  console.log(`lockerBoxId from URL: ${lockerBoxId}`);
-  return lockerBoxId;
-}
-
-// Load LockerBox details based on lockerBoxId from URL
-document.addEventListener("DOMContentLoaded", () => {
-  const lockerBoxId = getLockerBoxIdFromURL(); // Get lockerBoxId from URL
-
-  if (lockerBoxId) {
-    console.log(`lockerBoxId found in URL: ${lockerBoxId}`);
-    fetchLockerBoxDetails(lockerBoxId); // Fetch LockerBox details
-    fetchLockers(lockerBoxId); // Fetch and display list of lockers for the specific LockerBox
-    const lockerBoxLocation = { lat: 37.7749, lng: -122.4194 }; // Replace with actual location from Firestore
-    initMap(lockerBoxLocation); // Initialize map with the LockerBox location
-  } else {
-    console.log("No lockerBoxId found in URL.");
+    const urlParams = new URLSearchParams(window.location.search);
+    const lockerBoxId = urlParams.get("id"); // Updated to lockerBoxId
+    console.log(`lockerBoxId from URL: ${lockerBoxId}`);
+    return lockerBoxId;
   }
-});
+  
+  // Load LockerBox details based on lockerBoxId from URL
+  document.addEventListener("DOMContentLoaded", () => {
+    const lockerBoxId = getLockerBoxIdFromURL(); // Get lockerBoxId from URL
+  
+    if (lockerBoxId) {
+      console.log(`lockerBoxId found in URL: ${lockerBoxId}`);
+      fetchLockerBoxDetails(lockerBoxId); // Fetch LockerBox details
+      fetchLockers(lockerBoxId); // Fetch and display list of lockers for the specific LockerBox
+    } else {
+      console.log("No lockerBoxId found in URL.");
+    }
+  });
