@@ -59,7 +59,6 @@ async function fetchLockerBoxDetails(lockerBoxId) {
   });
 }
 
-// Fetch lockers for a specific LockerBox with real-time listener
 async function fetchLockers(lockerBoxId) {
   console.log(`Fetching lockers for LockerBox with lockerBoxId: ${lockerBoxId}`);
   const lockersRef = collection(db, "LockerBoxes", lockerBoxId, "Lockers");
@@ -68,6 +67,13 @@ async function fetchLockers(lockerBoxId) {
   onSnapshot(lockersRef, (querySnapshot) => {
     const lockersTable = document.getElementById("lockersTable");
     lockersTable.innerHTML = ""; // Clear the table before updating with new data
+
+    // Define a color mapping for the status
+    const statusColorMap = {
+      available: "#bdf4ca", // Green for available lockers
+      occupied: "#f4b5bb",   // Red for lockers in use
+      maintenance: "#fff3cd" // Yellow for lockers under maintenance
+    };
 
     querySnapshot.forEach((doc) => {
       const locker = doc.data();
@@ -88,6 +94,10 @@ async function fetchLockers(lockerBoxId) {
       row.classList.add("locker-row");
       row.dataset.id = lockerId; // Set lockerId as data attribute
       row.dataset.status = status;
+
+      // Set background color based on status
+      const rowColor = statusColorMap[status] || "#ffffff"; // Default to white if status not mapped
+      row.style.backgroundColor = rowColor;
 
       row.innerHTML = `
         <td>${lockerId}</td>
