@@ -193,7 +193,9 @@ document.addEventListener("DOMContentLoaded", async () => {
         const lockerUpdates = { status: newStatus };
         if (resetAccessCode) {
           lockerUpdates.userId = ""; // Set userId to an empty string
+          lockerUpdates.name = ""; // Set name to an empty string
         }
+
         await updateDoc(lockerRef, lockerUpdates);
 
         // Update LockerBox available lockers
@@ -201,6 +203,9 @@ document.addEventListener("DOMContentLoaded", async () => {
 
         // If setting to maintenance, reset the accessCode to null
         if (resetAccessCode) {
+          await updateDoc(credentialsRef, { accessCode: "MAINTENANCE" });
+        }
+        else {
           await updateDoc(credentialsRef, { accessCode: "" });
         }
 
