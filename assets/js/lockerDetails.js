@@ -179,9 +179,11 @@ document.addEventListener("DOMContentLoaded", async () => {
         let resetAccessCode = false;
 
         if (currentStatus === "occupied" || currentStatus === "available") {
+          if (currentStatus === "available") {
+            lockerBoxUpdate = { availableLockers: increment(-1) };
+          }
           newStatus = "maintenance";
           action = "Set to Maintenance";
-          lockerBoxUpdate = { availableLockers: increment(-1) };
           resetAccessCode = true;
         } else if (currentStatus === "maintenance") {
           newStatus = "available";
